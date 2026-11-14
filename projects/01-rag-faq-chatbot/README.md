@@ -9,7 +9,7 @@ Built end to end in **n8n** with **Claude** (Anthropic) for answers, **OpenAI em
 | | |
 |---|---|
 | **Category** | AI Workflow Automation · Retrieval-Augmented Generation (RAG) |
-| **Stack** | n8n 2.47 · Claude Opus 5.5 · OpenAI `text-embedding-3-small` · Qdrant 1.20 · PostgreSQL 16 · Docker Compose · Python (evaluation) |
+| **Stack** | n8n 2.47 · Claude Opus 5.5 · OpenAI `text-embedding-3-small` · Qdrant 1.20 · PostgreSQL 17 · Docker Compose · Python (evaluation) |
 | **Status** | Workflows checked against n8n 2.47 node definitions. Run the evaluation (step 7) to produce accuracy figures for your own setup. |
 
 ---
