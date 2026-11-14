@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contoso Pay Help Demo</title>
+  <!-- Official n8n chat widget. Pinned version; see https://www.npmjs.com/package/@n8n/chat -->
+  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat@1.44.7/dist/style.css" rel="stylesheet">
+  <style>
+    :root {
+      --chat--color-primary: #14B8A6;
+      --chat--color-primary-shade-50: #0F766E;
+      --chat--color-secondary: #0B1530;
+      --chat--header--background: #0B1530;
+    }
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 40px 16px; background: #F5F7FB; color: #0F172A; }
+    main { max-width: 640px; margin: 0 auto; }
+    code { background: #E2E8F0; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Contoso Pay (fictional demo)</h1>
+    <p>This page shows how the FAQ chatbot embeds into any website. Click the chat bubble in the corner.</p>
+    <p>Make sure the <code>RAG FAQ · 2. FAQ chatbot</code> workflow is <strong>active</strong> in n8n, and that
+      the <code>webhookUrl</code> below matches its Chat Trigger URL.</p>
+  </main>
+
+  <script type="module">
+    import { createChat } from "https://cdn.jsdelivr.net/npm/@n8n/chat@1.44.7/dist/chat.bundle.es.js";
+
+    createChat({
+      webhookUrl: "http://localhost:5678/webhook/b1d4d570-9e03-5304-9c01-8854082a24ee/chat",
+      mode: "window",
+      showWelcomeScreen: false,
+      initialMessages: [
+        "Hi! I'm the Contoso Pay FAQ assistant.",
+        "Ask me about accounts, payments, fees, limits or support.",
+      ],
+      i18n: {
+        en: {
+          title: "Contoso Pay Help",
+          subtitle: "Answers from our FAQ, with sources",
+          inputPlaceholder: "Ask a question about Contoso Pay…",
+          getStarted: "New conversation",
+          footer: "",
+          closeButtonTooltip: "Close",
+        },
+      },
+    });
+  </script>
+</body>
+</html>

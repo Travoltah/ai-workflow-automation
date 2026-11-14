@@ -1,0 +1,349 @@
+{
+  "name": "RAG FAQ · 1. Ingest FAQ documents",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 1. Ingest FAQ documents\nUpload Markdown, text, PDF, Word, CSV or JSON files through the form. Each file is split into chunks, embedded with OpenAI `text-embedding-3-small`, and stored in the Qdrant collection `faq_knowledge_base`.\n\n**Re-uploading a file replaces its old chunks**, so the knowledge base never holds duplicate or outdated answers.",
+        "width": 520,
+        "height": 260,
+        "color": 5
+      },
+      "id": "c0f237e2-c511-595c-b5d3-c8efb3c7860a",
+      "name": "Note: overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### Data quality guard\nBefore inserting, delete every chunk whose `metadata.source` equals the file name. On the very first run the collection doesn't exist yet, so this call fails harmlessly (error output is ignored).",
+        "width": 420,
+        "height": 220,
+        "color": 3
+      },
+      "id": "3ba6e2f9-8c11-56c9-b252-a7cb05e02b3d",
+      "name": "Note: idempotency",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -320
+      ]
+    },
+    {
+      "parameters": {
+        "formTitle": "Upload FAQ documents",
+        "formDescription": "Add or update documents in the FAQ chatbot's knowledge base. Re-uploading a file with the same name replaces the previous version.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "FAQ documents",
+              "fieldType": "file",
+              "multipleFiles": true,
+              "acceptFileTypes": ".md,.txt,.pdf,.docx,.csv,.json",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Category",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "General"
+                  },
+                  {
+                    "option": "Account & Security"
+                  },
+                  {
+                    "option": "Payments"
+                  },
+                  {
+                    "option": "Fees & Limits"
+                  },
+                  {
+                    "option": "Support"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {
+          "buttonLabel": "Upload and index"
+        }
+      },
+      "id": "a5f3005e-fc25-557d-9577-49af52085fc3",
+      "name": "Upload FAQ documents",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "7c2913cc-7d49-5606-a955-79d0df77ab0a"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turns every uploaded file into its own item so each file is tracked separately.\n// Also sets the MIME type from the file extension: browsers (especially on Windows)\n// often upload .md files as application/octet-stream, which the loader rejects.\nconst MIME = {\n  md: 'text/markdown', markdown: 'text/markdown', txt: 'text/plain',\n  pdf: 'application/pdf', csv: 'text/csv', json: 'application/json',\n  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',\n};\n\nconst out = [];\nfor (const item of $input.all()) {\n  for (const file of Object.values(item.binary ?? {})) {\n    const ext = (file.fileName ?? '').split('.').pop().toLowerCase();\n    if (!MIME[ext]) throw new Error(`Unsupported file type: ${file.fileName}. Use .md, .txt, .pdf, .docx, .csv or .json`);\n    out.push({\n      json: {\n        source: file.fileName,\n        category: item.json['Category'] ?? 'General',\n        ingestedAt: new Date().toISOString(),\n      },\n      binary: { data: { ...file, mimeType: MIME[ext] } },\n    });\n  }\n}\nif (!out.length) throw new Error('No files were uploaded.');\nreturn out;\n"
+      },
+      "id": "60e816b8-c778-5ce8-8fdf-f01787b50213",
+      "name": "Prepare files",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://qdrant:6333/collections/faq_knowledge_base/points/delete?wait=true",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ filter: { must: [ { key: 'metadata.source', match: { value: $json.source } } ] } }) }}",
+        "options": {}
+      },
+      "id": "bd35c599-6f2b-5907-b9b2-32e8ac11ebe4",
+      "name": "Remove previous version",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        -120
+      ],
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "chooseBranchMode": "waitForAll",
+        "output": "specifiedInput",
+        "useDataOfInput": 1
+      },
+      "id": "3e6df470-bf6d-5a46-ab25-fce92f45d337",
+      "name": "Wait for cleanup",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        720,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "mode": "id",
+          "value": "faq_knowledge_base"
+        },
+        "options": {}
+      },
+      "id": "0ccb2821-6d2e-5304-8826-2e64f9b008de",
+      "name": "Store in Qdrant",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "80850e37-9e2f-5c19-90a4-1231e745c8c3",
+      "name": "OpenAI Embeddings",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "binaryMode": "specificField",
+        "binaryDataKey": "data",
+        "loader": "auto",
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "source",
+                "value": "={{ $json.source }}"
+              },
+              {
+                "name": "category",
+                "value": "={{ $json.category }}"
+              },
+              {
+                "name": "ingestedAt",
+                "value": "={{ $json.ingestedAt }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "96cd04d6-28f5-56c3-b04a-208476b168fa",
+      "name": "Document Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "chunkSize": 1000,
+        "chunkOverlap": 150,
+        "options": {}
+      },
+      "id": "10097226-72a4-5ed8-a3b6-542383306217",
+      "name": "Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// One summary item for the form's completion screen and the execution log.\nconst files = $('Prepare files').all().map((i) => i.json.source);\nreturn [{ json: {\n  filesIndexed: files.length,\n  chunksStored: $input.all().length,\n  files,\n  collection: 'faq_knowledge_base',\n  finishedAt: new Date().toISOString(),\n} }];\n"
+      },
+      "id": "c1bc0aa6-3f57-503f-9d4c-2b39b0bfba75",
+      "name": "Ingestion summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Upload FAQ documents": {
+      "main": [
+        [
+          {
+            "node": "Prepare files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare files": {
+      "main": [
+        [
+          {
+            "node": "Remove previous version",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait for cleanup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove previous version": {
+      "main": [
+        [
+          {
+            "node": "Wait for cleanup",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait for cleanup": {
+      "main": [
+        [
+          {
+            "node": "Store in Qdrant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Embeddings": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Store in Qdrant",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Store in Qdrant",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Document Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store in Qdrant": {
+      "main": [
+        [
+          {
+            "node": "Ingestion summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "rag"
+    },
+    {
+      "name": "faq"
+    },
+    {
+      "name": "ingestion"
+    }
+  ]
+}

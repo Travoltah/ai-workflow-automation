@@ -1,0 +1,21 @@
+id,category,question,should_answer,expected_keywords
+1,fees,How much does an instant withdrawal to my debit card cost?,true,1.5%|$15
+2,fees,Is there a fee to send money to another Contoso Pay user?,true,free
+3,limits,What is the daily send limit for a verified account?,true,"$2,500"
+4,limits,How much can an unverified account send per day?,true,$50
+5,transfers,How long does a standard bank withdrawal take?,true,1|3 business days
+6,transfers,What happens if the person I send money to never claims it?,true,7 days|returned
+7,transfers,Can I cancel a scheduled payment?,true,1 hour
+8,security,I lost my phone. What should I do?,true,freeze|0199
+9,security,How do I reset my PIN?,true,Reset PIN|2 hours
+10,security,Will Contoso Pay staff ever ask for my PIN?,true,never
+11,account,What ID do I need to verify my account?,true,passport|selfie
+12,account,How long are transaction records kept after I close my account?,true,7 years
+13,support,What are the live chat support hours?,true,7am|10pm
+14,disputes,How long do I have to report an unauthorised transaction?,true,60 days
+15,fees,Do you charge a fee if my account is inactive?,true,$2|12 months
+16,payments,Can I top up my wallet with a credit card?,true,not accepted
+17,out-of-scope,What is the current price of Bitcoin?,false,
+18,out-of-scope,Does Contoso Pay offer home mortgages?,false,
+19,out-of-scope,Can you write me a poem about the ocean?,false,
+20,out-of-scope,What is the interest rate on a Contoso Pay savings account?,false,
