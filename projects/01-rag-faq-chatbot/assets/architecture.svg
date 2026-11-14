@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" font-family="Inter, system-ui, sans-serif">
+  <defs>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-opacity="0.04"/>
+    </pattern>
+    <radialGradient id="glowT" cx="85%" cy="85%" r="45%"><stop offset="0" stop-color="#14B8A6" stop-opacity="0.28"/><stop offset="1" stop-color="#14B8A6" stop-opacity="0"/></radialGradient>
+    <radialGradient id="glowV" cx="10%" cy="10%" r="40%"><stop offset="0" stop-color="#8B5CF6" stop-opacity="0.25"/><stop offset="1" stop-color="#8B5CF6" stop-opacity="0"/></radialGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5EEAD4"/></marker>
+    <marker id="arrowR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FCA5A5"/></marker>
+  </defs>
+
+  <rect width="1200" height="675" fill="#0B1530"/>
+  <rect width="1200" height="675" fill="url(#grid)"/>
+  <rect width="1200" height="675" fill="url(#glowT)"/>
+  <rect width="1200" height="675" fill="url(#glowV)"/>
+
+  <text x="60" y="78" fill="#94A3B8" font-size="18" font-weight="600" letter-spacing="5">AI WORKFLOW AUTOMATION · n8n</text>
+  <text x="60" y="132" fill="#FFFFFF" font-size="46" font-weight="800">RAG FAQ Chatbot</text>
+  <text x="60" y="172" fill="#5EEAD4" font-size="22" font-weight="600">Grounded answers · cited sources · no guessing</text>
+
+  <!-- Main flow -->
+  <g font-size="17" font-weight="700" text-anchor="middle">
+    <rect x="60" y="260" width="150" height="74" rx="14" fill="#111E40" stroke="#3B5BDB"/>
+    <text x="135" y="294" fill="#FFFFFF">Customer</text>
+    <text x="135" y="316" fill="#94A3B8" font-size="13" font-weight="500">chat / website</text>
+
+    <rect x="270" y="252" width="210" height="90" rx="14" fill="#8B5CF6"/>
+    <text x="375" y="290" fill="#FFFFFF">Claude agent</text>
+    <text x="375" y="314" fill="#EDE9FE" font-size="13" font-weight="500">+ conversation memory</text>
+
+    <rect x="540" y="252" width="160" height="90" rx="45" fill="#111E40" stroke="#5EEAD4" stroke-width="2"/>
+    <text x="620" y="290" fill="#FFFFFF">Answer</text>
+    <text x="620" y="312" fill="#FFFFFF">found?</text>
+
+    <rect x="770" y="214" width="370" height="64" rx="14" fill="#0F766E"/>
+    <text x="955" y="252" fill="#FFFFFF">✓ Answer + "Source: file.md"</text>
+
+    <rect x="770" y="318" width="370" height="64" rx="14" fill="#111E40" stroke="#F05A4A" stroke-width="2"/>
+    <text x="955" y="356" fill="#FFFFFF">✗ Safe fallback → human support</text>
+  </g>
+  <g stroke-width="2.5" fill="none">
+    <path d="M210 297H262" stroke="#5EEAD4" marker-end="url(#arrow)"/>
+    <path d="M480 297H532" stroke="#5EEAD4" marker-end="url(#arrow)"/>
+    <path d="M700 285C735 285 735 246 762 246" stroke="#5EEAD4" marker-end="url(#arrow)"/>
+    <path d="M700 309C735 309 735 350 762 350" stroke="#FCA5A5" marker-end="url(#arrowR)"/>
+  </g>
+
+  <!-- Knowledge base + gap loop -->
+  <g font-size="16" font-weight="700" text-anchor="middle">
+    <rect x="270" y="430" width="210" height="80" rx="14" fill="#111E40" stroke="#14B8A6" stroke-width="2"/>
+    <text x="375" y="464" fill="#FFFFFF">Qdrant FAQ index</text>
+    <text x="375" y="486" fill="#94A3B8" font-size="13" font-weight="500">vectors + source metadata</text>
+
+    <rect x="770" y="430" width="370" height="80" rx="14" fill="#111E40" stroke="#F05A4A"/>
+    <text x="955" y="464" fill="#FFFFFF">faq_gaps log (Postgres)</text>
+    <text x="955" y="486" fill="#94A3B8" font-size="13" font-weight="500">most-asked unanswered questions</text>
+
+    <rect x="540" y="560" width="160" height="70" rx="14" fill="#14B8A6"/>
+    <text x="620" y="592" fill="#0B1530">Upload form</text>
+    <text x="620" y="612" fill="#0B1530" font-size="13" font-weight="600">idempotent re-ingest</text>
+  </g>
+  <g stroke-width="2.5" fill="none" stroke-dasharray="7 6">
+    <path d="M375 430V350" stroke="#5EEAD4" marker-end="url(#arrow)"/>
+    <path d="M955 382V422" stroke="#FCA5A5" marker-end="url(#arrowR)"/>
+    <path d="M955 510C955 595 780 595 708 595" stroke="#FCA5A5" marker-end="url(#arrowR)"/>
+    <path d="M540 595C420 595 375 570 375 518" stroke="#5EEAD4" marker-end="url(#arrow)"/>
+  </g>
+  <text x="60" y="600" fill="#CBD5E1" font-size="15" font-weight="600">Evaluated: accuracy · refusals · citations · latency</text>
+  <text x="60" y="624" fill="#64748B" font-size="13">20 test cases with CI-ready quality gates</text>
+</svg>

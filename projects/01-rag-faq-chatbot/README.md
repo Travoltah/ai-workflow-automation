@@ -1,5 +1,7 @@
 # RAG FAQ Chatbot (n8n + Claude + Qdrant)
 
+![RAG FAQ chatbot architecture](assets/architecture.svg)
+
 A customer-support chatbot that answers **only from your FAQ documents**, cites its sources, refuses to guess, and turns every unanswered question into a to-do item for the FAQ owner.
 
 Built end to end in **n8n** with **Claude** (Anthropic) for answers, **OpenAI embeddings**, **Qdrant** as the vector database and **PostgreSQL** for analytics. It ships with a sample knowledge base for *Contoso Pay*, a **fictional** digital wallet.
@@ -73,6 +75,7 @@ The loop at the bottom is the point: **questions the bot can't answer become new
 │   ├── test-cases.csv                 # 16 in-scope + 4 out-of-scope questions with expected facts
 │   └── evaluate.py                    # runs the suite against the live bot, writes a report
 ├── widget/index.html                  # embed the chatbot on any web page
+├── assets/architecture.svg            # diagram used in this README
 ├── init-db/01-faq-analytics.sql       # creates faq_gaps table + gap report view
 ├── docker-compose.yml                 # n8n + Qdrant + Postgres
 └── .env.example
