@@ -332,9 +332,11 @@ On the **Form** output, add **n8n Form**:
 |---|---|
 | Page Type | **Form Ending** |
 | On n8n Form Submission | **Show Text** |
-| Text | `{{ $json.html }}` |
+| Text | `{{ $('Prepare reply').first().json.html }}` |
 
 Because this node is connected after the trigger, the form shows a waiting page while Claude works, then this results page.
+
+*Why not `{{ $json.html }}`:* n8n can render this page **after the run has finished**, which always happens for test runs from the editor. At that point `$json` is empty and you get a blank card. Referring to the node by name reads the stored result and works in both cases.
 
 ### Step 19. `Return test cases` (Edit Fields)
 
@@ -412,6 +414,8 @@ Click **Publish** (top right). The production form URL (`/form/...`) and API URL
 | Symptom | Cause | Fix |
 |---|---|---|
 | Form shows *"Workflow could not be started"* | A **Respond to Webhook** node is connected | Use *When Last Node Finishes* on the webhook and an Edit Fields node at the end (Steps 3 and 19) |
+| Results page after the form is a **blank card** | `Show test cases` uses `{{ $json.html }}` | Use `{{ $('Prepare reply').first().json.html }}` (Step 18) |
+| `Get Jira story` fails with *Invalid base URL* | A Jira key was entered but the Jira credential is empty | Fill in the Jira credential, or leave the key empty and paste the story |
 | `Referenced node doesn't exist` | A node name differs from the guide (e.g. `Generate from Form`) | Rename the node exactly as written |
 | `Normalize story` shows `channel: "schedule"` for a form run | The form trigger isn't named `Generate from form` | Rename it |
 | HTTP 400 `output_config...` or `temperature` | Request body edited by hand | Use `JSON.stringify($json.anthropicRequest)` as the body. Don't add `temperature`: API version `2026-10-21` rejects it |

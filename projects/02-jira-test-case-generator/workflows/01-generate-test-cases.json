@@ -550,7 +550,7 @@
       "parameters": {
         "operation": "completion",
         "respondWith": "showText",
-        "responseText": "={{ $json.html }}"
+        "responseText": "={{ $('Prepare reply').first().json.html }}"
       },
       "id": "85279692-72e0-51fb-baa1-94579102eb0e",
       "name": "Show test cases",

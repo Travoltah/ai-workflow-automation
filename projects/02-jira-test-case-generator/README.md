@@ -212,6 +212,8 @@ Measured on the runs above: a typical story uses about **2,100 input and 4,700 o
 | Problem | Fix |
 |---|---|
 | Form says *"Problem submitting response"* | The test URL only accepts one submission per **Execute workflow** click. Use the production URL (workflow published). |
+| Blank card instead of the results page | You're on an older copy of the workflow: in `Show test cases`, set Text to `{{ $('Prepare reply').first().json.html }}` |
+| *Invalid base URL* on `Get Jira story` | You entered a Jira key but Jira isn't connected. Leave the key empty and paste the story, or set up the Jira credential (step 6). |
 | `401` from `Ask Claude for test cases` | Wrong or empty Anthropic API key in the credential |
 | Results page shows *Needs review* | Read the listed issues (e.g. an uncovered criterion). Re-run, or raise `EFFORT`. |
 | `status: needs_clarification` for a real story | The story has no acceptance criteria and nothing measurable. Add criteria. That's the intended behaviour. |
