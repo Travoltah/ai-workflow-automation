@@ -82,12 +82,12 @@
       <text x="566" y="460">Test Scenario</text><text x="790" y="460">Preconditions / Data / Steps</text><text x="1008" y="460">Expected</text><text x="1092" y="460">Results</text>
     </g>
     <g fill="#CBD5E1" font-weight="500">
-      <text x="276" y="496">SL-001</text><text x="340" y="496">Loan Application</text><text x="478" y="496">Functional</text>
-      <text x="566" y="496">V2 application blocked during debit run</text><text x="790" y="496">Preconditions: active V2 loan…</text><text x="1008" y="496">Blocked</text>
-      <text x="276" y="526">SL-014</text><text x="340" y="526">Instant Settlement</text><text x="478" y="526">Boundary</text>
-      <text x="566" y="526">Quote expires at 23:59 on the same day</text><text x="790" y="526">Steps: 1. Open Settle loan…</text><text x="1008" y="526">New quote</text>
-      <text x="276" y="556">SL-031</text><text x="340" y="556">Settlement Retry</text><text x="478" y="556">Negative</text>
-      <text x="566" y="556">Code 14 is not retried</text><text x="790" y="556">Test data: response code 14</text><text x="1008" y="556">Not retried</text>
+      <text x="276" y="496">SM-004</text><text x="340" y="496">Send Money</text><text x="478" y="496">Boundary</text>
+      <text x="566" y="496">Exactly $2,500.00 sent in one day</text><text x="790" y="496">Preconditions: $2,250.00 sent…</text><text x="1008" y="496">Sent</text>
+      <text x="276" y="526">SM-011</text><text x="340" y="526">Instant Withdrawal</text><text x="478" y="526">Boundary</text>
+      <text x="566" y="526">Fee capped at $15.00</text><text x="790" y="526">Test data: withdraw $1,200.00</text><text x="1008" y="526">Fee $15.00</text>
+      <text x="276" y="556">SM-019</text><text x="340" y="556">Password Reset</text><text x="478" y="556">Negative</text>
+      <text x="566" y="556">Reset link used a second time</text><text x="790" y="556">Steps: 1. Open the reset link…</text><text x="1008" y="556">Rejected</text>
     </g>
     <rect x="1084" y="482" width="62" height="20" rx="4" fill="#C6EFCE"/><text x="1093" y="497" fill="#006100" font-weight="700">PASS</text>
     <rect x="1084" y="512" width="62" height="20" rx="4" fill="#E2E8F0"/><text x="1088" y="527" fill="#334155" font-weight="700">PENDING</text>
@@ -103,5 +103,9 @@
     <rect x="50" y="546" width="180" height="38" rx="19" fill="#FCD34D" fill-opacity="0.12" stroke="#FCD34D"/>
     <text x="140" y="570" fill="#FDE68A">Works without Jira</text>
   </g>
-  <text x="60" y="630" fill="#64748B" font-size="13" font-weight="500">n8n · Claude Opus 5.5 (structured JSON output) · Jira Cloud REST API · Python service (python-docx, openpyxl) · Docker Compose</text>
+  <!-- Author -->
+  <line x1="50" y1="604" x2="1154" y2="604" stroke="#334155"/>
+  <text x="60" y="633" fill="#FFFFFF" font-size="20" font-weight="800">Trevor Kauyu</text>
+  <text x="60" y="657" fill="#5EEAD4" font-size="13" font-weight="600">AI-Driven Test Automation | AI &amp; Data Governance | AI Workflow Solutions | Data Analytics | FinTech, Banking &amp; Higher Ed</text>
+  <text x="1150" y="632" fill="#64748B" font-size="12" font-weight="500" text-anchor="end">n8n · Claude Opus 5.5 (structured outputs) · Jira Cloud REST API · Python (python-docx, openpyxl) · Docker</text>
 </svg>

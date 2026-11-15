@@ -25,7 +25,7 @@ How to work:
    - Combine checks that share the same setup and steps into one test with several expected outcomes. Do not repeat a check another story's tests already cover.
 4. Each test case, in the style of a bank's QA test script:
    - "module": the function or screen under test, 2-4 words, the same for related tests.
-   - "scenario": one behaviour in plain words, for example "Loan application is blocked while debit order processing is active".
+   - "scenario": one behaviour in plain words, for example "Transfer is blocked when the balance is lower than the amount".
    - "preconditions": the state before the test (user role, data, system state).
    - "testData": concrete values to use, or "None".
    - "steps": short imperative actions, one per entry, no numbering. Start from where the tester signs in or opens the screen.

@@ -26,12 +26,12 @@ def b64(path: Path) -> str:
 
 @pytest.mark.skipif(not SAMPLES.is_dir(), reason="sample-input not mounted")
 def test_docx_text_tables_and_embedded_wireframe():
-    cr = next(SAMPLES.glob("*.docx"))
-    result = document_reader.prepare([{"name": cr.name, "mimeType": "", "data": b64(cr), "role": "document"}])
+    fsd = next(SAMPLES.glob("*.docx"))
+    result = document_reader.prepare([{"name": fsd.name, "mimeType": "", "data": b64(fsd), "role": "document"}])
     text = result.blocks[0]["text"]
-    assert "## FR-02 Instant settlement" in text                 # headings kept as Markdown
-    assert "| BR-04.2 | Overpayment ≤ R10.00 |" in text           # tables kept as Markdown tables
-    assert text.index("FR-01") < text.index("BR-04.1")           # document order kept
+    assert "## FR-04 Send money to a contact" in text            # headings kept as Markdown
+    assert "| BR-05.2 | 1.5% of the amount is below $0.25 |" in text   # tables kept as Markdown tables
+    assert text.index("FR-01") < text.index("BR-05.1")           # document order kept
     assert [b["type"] for b in result.blocks[1:]] == ["text", "image"]   # the embedded wireframe
     assert result.files[0]["images"] == 1 and not result.warnings
 
@@ -57,54 +57,54 @@ def test_pdf_passes_through_and_bad_files_warn():
 
 
 def payload():
-    row = {"id": "SL-001", "module": "Loan Application", "type": "Functional", "scenario": "Block V2 application",
-           "details": "Preconditions: x\n\nSteps:\n1. a\n2. b", "expected": "Blocked", "priority": "High",
+    row = {"id": "SM-001", "module": "Payments", "type": "Functional", "scenario": "Transfer above the daily limit is blocked",
+           "details": "Preconditions: x\n\nSteps:\n1. a\n2. b", "expected": "Transfer blocked", "priority": "High",
            "covers": ["AC1"], "jiraStory": "CPAY-1", "jiraStoryUrl": "https://example.atlassian.net/browse/CPAY-1"}
     return {
-        "meta": {"systemName": "Contoso Lend", "title": "Loan Settlement Logic", "changeRequest": "CR-2026-014",
-                 "requestedDate": "23 September 2026"},
+        "meta": {"systemName": "Contoso Pay", "title": "Secure Sign-in and Money Movement", "changeRequest": "FSD-2026-031",
+                 "requestedDate": "2 November 2026"},
         "sections": [
-            {"letter": "A", "name": "Loan Application Restriction: during [debit] runs", "shortName": "Loan Restriction / Debit",
-             "rows": [row, {**row, "id": "SL-002"}]},
-            {"letter": "B", "name": "Regression", "shortName": "Regression", "rows": [{**row, "id": "SL-003", "type": "Regression"}]},
+            {"letter": "A", "name": "Send money: daily [limit] checks", "shortName": "Payments / Limits",
+             "rows": [row, {**row, "id": "SM-002"}]},
+            {"letter": "B", "name": "Regression", "shortName": "Regression", "rows": [{**row, "id": "SM-003", "type": "Regression"}]},
             {"letter": "C", "name": "Empty", "rows": []},
         ],
         "stories": [{"section": "A", "ref": "US-01", "jiraKey": "CPAY-1", "title": "t", "tests": 2, "coveragePct": 100}],
-        "traceability": [{"story": "CPAY-1", "acId": "AC1", "acText": "x", "source": "document", "tests": ["SL-001"]}],
-        "questions": [{"story": "CPAY-1", "question": "What is the cut-off?"}],
+        "traceability": [{"story": "CPAY-1", "acId": "AC1", "acText": "x", "source": "document", "tests": ["SM-001"]}],
+        "questions": [{"story": "CPAY-1", "question": "Does the daily limit reset at midnight local time?"}],
     }
 
 
 def test_workbook_layout_and_formulas():
     wb = load_workbook(io.BytesIO(excel_builder.build_workbook(payload())))
-    assert wb.sheetnames == ["Summary", "A – Loan Restriction   Debit", "B – Regression",
+    assert wb.sheetnames == ["Summary", "A – Payments   Limits", "B – Regression",
                              "Stories & Tickets", "Traceability", "Open Questions"]
     summary = wb["Summary"]
-    assert summary["A1"].value == "Contoso Lend – Loan Settlement Logic QA Test Script"
-    assert summary["A2"].value == "Change Request – CR-2026-014  |  Requested: 23 September 2026"
+    assert summary["A1"].value == "Contoso Pay – Secure Sign-in and Money Movement QA Test Script"
+    assert summary["A2"].value == "Change Request – FSD-2026-031  |  Requested: 2 November 2026"
     assert [c.value for c in summary[4]] == ["Metric", "PASS", "FAIL", "PENDING", "BLOCKED", "TOTAL"]
     assert summary["B5"].value == "=SUM(B9:B10)"
-    assert summary["B9"].value == "=COUNTIF('A – Loan Restriction   Debit'!$G$6:$G$1000,\"PASS\")"
+    assert summary["B9"].value == "=COUNTIF('A – Payments   Limits'!$G$6:$G$1000,\"PASS\")"
     assert summary["F10"].value == "=COUNTA('B – Regression'!$A$6:$A$1000)"
 
-    sheet = wb["A – Loan Restriction   Debit"]
+    sheet = wb["A – Payments   Limits"]
     assert [c.value for c in sheet[4]][:8] == ["ID #", "Function / Module", "Test Type", "Test Scenario",
                                                "Preconditions / Data / Steps", "Expected Response", "Results", "Comments"]
     assert sheet["A5"].value.startswith("◆ A – ")
-    assert sheet["A6"].value == "SL-001" and sheet["G6"].value == "PENDING"
+    assert sheet["A6"].value == "SM-001" and sheet["G6"].value == "PENDING"
     assert sheet["K6"].hyperlink.target.endswith("/browse/CPAY-1")
     assert sheet.data_validations.dataValidation[0].formula1 == '"PENDING,PASS,FAIL,BLOCKED"'
     assert wb["Traceability"]["F4"].value == "Yes"
 
 
 def test_file_name_is_safe():
-    assert excel_builder.file_name({"systemName": "Contoso Lend", "changeRequest": "CR/014: V1.0"}) == \
-        "Contoso_Lend_CR_014_V1.0_QA_Test_Script.xlsx"
+    assert excel_builder.file_name({"systemName": "Contoso Pay", "changeRequest": "FSD/031: V1.0"}) == \
+        "Contoso_Pay_FSD_031_V1.0_QA_Test_Script.xlsx"
 
 
 def test_figma_links():
-    assert document_reader.parse_figma_url("https://www.figma.com/design/AbC123/Loans?node-id=12-34&t=x") == ("AbC123", "12:34")
-    assert document_reader.parse_figma_url("https://figma.com/file/AbC123/Loans") == ("AbC123", None)
+    assert document_reader.parse_figma_url("https://www.figma.com/design/AbC123/Payments?node-id=12-34&t=x") == ("AbC123", "12:34")
+    assert document_reader.parse_figma_url("https://figma.com/file/AbC123/Payments") == ("AbC123", None)
     with pytest.raises(ValueError):
         document_reader.parse_figma_url("https://example.com/design/AbC123")
 

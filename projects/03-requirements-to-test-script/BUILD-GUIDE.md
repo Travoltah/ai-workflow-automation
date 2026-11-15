@@ -221,7 +221,7 @@ Mode **Run Once for Each Item** · paste [`code/3-read-analysis.js`](workflows/c
 
 It parses Claude's JSON, stops on a refusal or a cut-off answer, checks for duplicate story refs and stories without criteria, and makes the **change-request label** (for example `req2test-cr-2026-014-loan-settlement-logic-v1-0`). Every story created from this document will carry it. That label is how a second run finds them (step 13).
 
-**Test:** run with the sample. Expect around six stories (instant settlement, retries, refunds, …). Stories for FR-01 should have criteria with `source: "document"`; the others `generated`.
+**Test:** run with the sample. Expect 4 stories, one per requirement (account lockout, send money, instant withdrawal fee, freeze card). FR-01 lists its criteria in the document, so its criteria should have `source: "document"`; FR-02 to FR-04 are prose or a business-rule table, so theirs should be `generated`.
 
 ---
 
@@ -325,7 +325,7 @@ The context includes the change-request summary and the titles of the **other** 
 ### Step 20. `Write test cases` (HTTP Request)
 Same settings as `Analyse requirements` (step 10), plus Options → **Batching**: Items per Batch `4`, Batch Interval `1000` ms.
 
-> The HTTP Request node sends its items **in parallel**. Batching only staggers the start of each group of 4, which is kinder to your API rate limit. Six stories finish in about the time of the slowest one.
+> The HTTP Request node sends its items **in parallel**. Batching only staggers the start of each group of 4, which is kinder to your API rate limit. The sample's 4 stories finish in about the time of the slowest one.
 
 ### Step 21. `Check test cases` (Code)
 Each Item · [`code/9-check-test-cases.js`](workflows/code/9-check-test-cases.js). The **quality gate**, in code rather than in the prompt:
@@ -337,7 +337,7 @@ It also labels where each criterion came from: *Document*, *Jira* or *Generated 
 ### Step 22. `Lay out test script` (Code)
 All Items · [`code/10-lay-out-test-script.js`](workflows/code/10-lay-out-test-script.js).
 - Sections **A, B, C…**: one per story, then a final **Regression** section collecting every story's regression tests.
-- Test ids **across the whole script**, in sheet order: `SL-001, SL-002, …`. The prefix comes from the form, the document (Claude suggests one, e.g. *SL* for Settlement Logic), or `defaultTestIdPrefix`.
+- Test ids **across the whole script**, in sheet order: `WE-001, WE-002, …`. The prefix comes from the form, the document (Claude suggests one, e.g. *WE* for Wallet Enhancements), or `defaultTestIdPrefix`.
 - `Preconditions / Data / Steps` text in the same layout as a manual script: *Preconditions:*, *Test data:*, *Steps:* 1. 2. 3.
 - The **QA ticket decision** (`qaAction`) per story, plus the ticket body in Jira wiki markup with a table of the tests and full steps.
 

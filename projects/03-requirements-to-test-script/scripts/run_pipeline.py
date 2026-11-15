@@ -1,7 +1,7 @@
 """Runs the workflow through its API and saves the Excel test script.
 
-    python scripts/run_pipeline.py --document "sample-input/CR-2026-014 Loan Settlement Logic V1.0.docx" \
-        --wireframe sample-input/wireframe-settle-loan.png --wireframe sample-input/wireframe-settlement-failed.png
+    python scripts/run_pipeline.py --document "sample-input/FSD-2026-031 Contoso Pay Wallet Enhancements V1.0.docx" \
+        --wireframe sample-input/wireframe-send-money.png --wireframe sample-input/wireframe-freeze-card.png
 
     python scripts/run_pipeline.py --jira-stories CPAY-1,CPAY-2 --create-jira
 

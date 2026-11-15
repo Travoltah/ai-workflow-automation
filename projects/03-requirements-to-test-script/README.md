@@ -10,13 +10,13 @@ Upload a **Functional Specification (FSD) or Change Request** in Word or PDF, ad
 4. creates a **QA ticket per story in Jira, linked to its story**;
 5. gives you an **Excel test script** in a bank-style format: a Summary sheet with PASS / FAIL / PENDING / BLOCKED counts, one sheet per section, and a Regression section.
 
-Built in **n8n** with **Claude** (Anthropic Messages API, structured outputs), the **Jira Cloud REST API** and a small **Python service** for Word/PDF reading and Excel output. It ships with a sample Change Request for *Contoso Lend*, a **fictional** lender, and a **mock Jira**, so you can try everything without a Jira site.
+Built in **n8n** with **Claude** (Anthropic Messages API, structured outputs), the **Jira Cloud REST API** and a small **Python service** for Word/PDF reading and Excel output. It ships with a sample FSD for *Contoso Pay*, a **fictional** mobile wallet, written from 4 of the user stories in [project 02](../02-jira-test-case-generator/sample-stories/stories.json) (4 functional requirements, 1 business-rule table, 1 embedded wireframe) and kept small so a live run costs under $1, and a **mock Jira**, so you can try everything without a Jira site.
 
 | | |
 |---|---|
 | **Category** | AI Workflow Automation · Test Automation / QA · Business Analysis |
 | **Stack** | n8n 2.47 · Claude Opus 5.5 · Jira Cloud REST API · Python (FastAPI, python-docx, openpyxl) · Docker Compose |
-| **Status** | Tested end to end on 2026-11-14 with `claude-opus-5-5` and the mock Jira (see [Tested results](#tested-results)). The re-run duplicate check found a bug. It is fixed and covered by an offline test, but the fixed version has not yet been re-run live. |
+| **Status** | Tested end to end on 2026-11-15 with `claude-opus-5-5` and the mock Jira: the sample FSD in 118 s for **$0.71** (see [Tested results](#tested-results)). An earlier re-run test found a duplicate-story bug. It is fixed and covered by an offline test, but the re-run path has not yet been repeated live. |
 | **Build it yourself** | [BUILD-GUIDE.md](BUILD-GUIDE.md): every node, setting and line of code, step by step |
 
 ![Summary sheet of the generated test script](assets/test-script-summary.png)
@@ -97,7 +97,7 @@ flowchart LR
 │   ├── 01-requirements-to-test-script.json   the n8n workflow (import this)
 │   └── code/                       the 14 Code-node scripts, readable on their own
 ├── service/                        the Python test-script service + unit tests
-├── sample-input/                   sample Change Request (.docx) and two wireframes
+├── sample-input/                   sample FSD (.docx) and two wireframes
 ├── sample-output/                  the Excel test script produced from the sample
 ├── scripts/
 │   ├── run_pipeline.py             call the API from the command line
@@ -148,18 +148,18 @@ n8n opens at http://localhost:5678. Create the owner account on first visit.
 
 ### 4. Run it from the form
 1. Click **Publish**, then open **Upload requirements** → copy the **Production URL**.
-2. Upload `sample-input/CR-2026-014 Loan Settlement Logic V1.0.docx` under *Requirements documents*, and the two PNGs under *Wireframes*.
+2. Upload `sample-input/FSD-2026-031 Contoso Pay Wallet Enhancements V1.0.docx` under *Requirements documents*, and the two PNGs under *Wireframes*.
 3. Choose **No** for *Create Jira tickets* to try it without Jira, or **Yes** and project `CPAY`.
-4. Wait 2–3 minutes. The page shows a summary and the Excel test script downloads. A copy is saved in `output/`.
+4. Wait 1–2 minutes. The page shows a summary, including the Claude cost of the run, and the Excel test script downloads. A copy is saved in `output/`.
 
 To build from existing stories instead, type keys such as `CPAY-1, CPAY-2` in *Existing Jira stories* (the mock Jira has these two). They are read and get QA tickets and test cases. They are never recreated.
 
 ### 5. Run it from the command line (API)
 ```bash
 python scripts/run_pipeline.py \
-  --document "sample-input/CR-2026-014 Loan Settlement Logic V1.0.docx" \
-  --wireframe sample-input/wireframe-settle-loan.png \
-  --wireframe sample-input/wireframe-settlement-failed.png \
+  --document "sample-input/FSD-2026-031 Contoso Pay Wallet Enhancements V1.0.docx" \
+  --wireframe sample-input/wireframe-send-money.png \
+  --wireframe sample-input/wireframe-freeze-card.png \
   --create-jira --project CPAY
 ```
 The API (`POST /webhook/req2test/run`) takes JSON with base64 files and returns the `.xlsx`:
@@ -177,20 +177,38 @@ The API (`POST /webhook/req2test/run`) takes JSON with base64 files and returns 
 
 ## Tested results
 
-Sample input: the Contoso Lend Change Request (5 functional requirements, 1 business-rule table, 1 embedded wireframe) plus the two wireframe images. All runs used the API on n8n 2.47.7.
+### Current sample: Contoso Pay FSD-2026-031 (2026-11-15)
+
+Input: the sample FSD (4 functional requirements, 1 business-rule table, 1 embedded wireframe) plus the two wireframe images, through the API on n8n 2.47.7, creating tickets in the mock Jira.
+
+| Measure | Result |
+|---|---|
+| Stories | **4 created** (`CPAY-3…6`, labelled `req2test-fsd-2026-031-wallet-enhancements-v1-0`) |
+| QA tickets | **4 created and linked** to their stories (`CPAY-7…10`) |
+| Test cases | **44** in 4 sections + Regression, ids `WE-001…WE-044` |
+| Acceptance criteria | 30, **100% covered**. FR-01's 3 were copied from the document; 27 were **Generated by AI** and flagged as such |
+| Quality gate | Passed for **4 of 4** stories |
+| Claude usage | 20,757 input / 31,527 output tokens, **$0.71** |
+| Time | 118 s |
+
+The workbook is in [`sample-output/`](sample-output/). What it shows:
+- Boundary tests at the document's own limits: $0.99 vs $1.00 minimum transfer, the $2,500.00 daily total, a $16.00 withdrawal hitting the $0.25 minimum fee, $1,000.00 and above capped at $15.00, and $33.33 (fee $0.49995) rounded to $0.50.
+- Wireframe details in the tests: *Jordan Lee*, *$250.00*, the $1,180.40 balance (so $1,180.41 is blocked), card ending *4821*, and the *Also block recurring payments* checkbox.
+- Gaps raised as questions, not guesses: whether the daily limit is a calendar day (and in which time zone), whether the fee is deducted from the amount or charged on top, how half cents round.
+- **A weakness found:** the Open Questions sheet has 20 questions with about 6 duplicates. The 10 document-level questions from the analysis overlap with the questions each story's test call raises (for example, both ask for the exact lockout message). De-duplicating them is the next improvement.
+
+### Earlier sample: Contoso Lend loan-settlement Change Request (2026-11-14)
+
+Input: a Change Request with 5 functional requirements, 1 business-rule table and 1 embedded wireframe, plus two wireframe images. This sample has since been replaced by the smaller FSD above.
 
 | Run | Mode | Result |
 |---|---|---|
 | 1 | Preview (no Jira) | 13 stories, 177 tests, 104 open questions, **$2.19**, 183 s. Correct, but far more granular than a real test script, so the prompts were tuned (one story per requirement, 6–12 tests each, at most 10 document-level questions). |
-| 2 | Jira (mock) + existing stories `CPAY-1, CPAY-2` | **7 stories created** (`CPAY-3…9`, labelled with the CR), **2 existing stories read, not recreated**, **9 QA tickets created and linked** (`CPAY-10…18`). 89 tests in 9 sections + Regression, ids `SL-001…SL-089`. Quality gate passed for 9 of 9 stories, 100% criteria coverage. **$1.36**, 147 s. This is the file in [`sample-output/`](sample-output/). |
+| 2 | Jira (mock) + existing stories `CPAY-1, CPAY-2` | **7 stories created** (`CPAY-3…9`, labelled with the CR), **2 existing stories read, not recreated**, **9 QA tickets created and linked** (`CPAY-10…18`). 89 tests in 9 sections + Regression, ids `SL-001…SL-089`. Quality gate passed for 9 of 9 stories, 100% criteria coverage. **$1.36**, 147 s. |
 | 3 | Same input again | QA tickets of matched stories got **comments, not copies**, and `CPAY-1`/`CPAY-2` were again only read. **But 4 of 7 stories were created a second time**: Claude had worded their titles differently, and the first version matched by exact title. |
 | Fix | Offline test with run 3's real data | Added `Match earlier stories`: Claude matches stories by scope, and the code accepts only real, unused keys. Replaying run 3's analysis through the new `Plan stories`: titles only gives 4 duplicates (the bug reproduced); with matching, **7 reused, 0 created**; an invalid matcher answer is rejected safely. |
 
-What the run-2 workbook shows:
-- Criteria are marked by source: for FR-01 they are copied from the document; FR-02 to FR-05 had none, so all of theirs are **Generated by AI**. They are flagged the same way in the Jira stories.
-- Wireframe details appear in the tests (screen title *Settle loan - LN-20481*, *R 12 450.00*, *Failed - code 51*).
-- Boundary tests sit at the document's limits: R10.00 vs R10.01 overpayment, day 40 vs day 41 reversal, the 3rd retry, 23:59 quote expiry.
-- The permissions, audit and feature-flag rules became one combined story, as in a typical bank test script.
+Run 2 also showed boundary tests at that document's limits (R10.00 vs R10.01 overpayment, day 40 vs day 41 reversal, 23:59 quote expiry), and its permissions, audit and feature-flag rules became one combined story. That extra story is why the current sample leaves those rules out, to keep a live run under $1.
 
 ---
 

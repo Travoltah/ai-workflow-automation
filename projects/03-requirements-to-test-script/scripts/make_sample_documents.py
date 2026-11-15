@@ -1,8 +1,12 @@
-"""Creates the sample inputs in sample-input/: a Change Request (.docx, with an embedded
+"""Creates the sample inputs in sample-input/: a Functional Specification (.docx, with an embedded
 wireframe) and two wireframe images.
 
-The company and system are fictional (Contoso Lend). Run inside the service container,
-which already has python-docx and Pillow:
+The company and app are fictional (Contoso Pay). The FSD has 4 requirements taken from the user
+stories of project 02 (../02-jira-test-case-generator/sample-stories/stories.json: S01, S04, S06,
+S08), kept small so a live run costs under $1 of Claude usage. It mixes formats the way a real FSD
+does: FR-01 lists its acceptance criteria, FR-02 and FR-04 are prose only (so the workflow has to
+write the criteria), and FR-03 is a business-rule table.
+Run inside the service container, which already has python-docx and Pillow:
 
     docker compose run --rm -v "$PWD/sample-input:/out" -v "$PWD/scripts:/scripts:ro" \
         testscript-service python /scripts/make_sample_documents.py /out
@@ -18,7 +22,8 @@ from docx.shared import Cm, Pt
 from PIL import Image, ImageDraw, ImageFont
 
 OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "sample-input")
-INK, LINE, MUTED, ACCENT, WARN = "#1F2937", "#9CA3AF", "#6B7280", "#1D4ED8", "#B91C1C"
+DOC_NAME = "FSD-2026-031 Contoso Pay Wallet Enhancements V1.0.docx"
+INK, LINE, MUTED, ACCENT = "#1F2937", "#9CA3AF", "#6B7280", "#1D4ED8"
 
 
 def f(size, bold=False):
@@ -32,8 +37,8 @@ def frame(title: str):
     img = Image.new("RGB", (1200, 800), "white")
     d = ImageDraw.Draw(img)
     d.rectangle([0, 0, 1199, 64], fill="#F3F4F6", outline=LINE)
-    d.text((24, 18), "Contoso Lend · Operations", font=f(22, True), fill=INK)
-    d.text((880, 22), "ops.user@contoso", font=f(18), fill=MUTED)
+    d.text((24, 18), "Contoso Pay", font=f(22, True), fill=INK)
+    d.text((960, 22), "Alex Rivera", font=f(18), fill=MUTED)
     d.text((24, 92), title, font=f(30, True), fill=INK)
     return img, d
 
@@ -49,48 +54,49 @@ def button(d, x, y, text, primary=True, w=230):
     d.text((x + 22, y + 15), text, font=f(18, True), fill="white" if primary else ACCENT)
 
 
-def settle_screen() -> Image.Image:
-    img, d = frame("Settle loan - LN-20481")
-    field(d, 24, 150, "Customer", "Thandi Mokoena  (CUS-7731)")
-    field(d, 24, 240, "Outstanding balance", "R 12 450.00")
-    field(d, 24, 330, "Settlement method", "Instant EFT")
-    field(d, 24, 420, "Settlement amount", "R 12 450.00")
-    d.rectangle([600, 150, 1170, 490], outline=LINE, width=2)
-    d.text((620, 166), "Settlement quote", font=f(20, True), fill=INK)
-    for i, (k, v) in enumerate([("Capital", "R 11 900.00"), ("Interest to date", "R 480.00"),
-                                ("Fees", "R 70.00"), ("Quote valid until", "Today 23:59")]):
+def send_money_screen() -> Image.Image:
+    img, d = frame("Send money - Confirm")
+    field(d, 24, 150, "To", "Jordan Lee  (@jordanlee)")
+    field(d, 24, 240, "Amount", "$250.00")
+    field(d, 24, 330, "From", "Contoso Pay balance  ($1,180.40 available)")
+    field(d, 24, 420, "Note (optional)", "Concert tickets")
+    d.rectangle([600, 150, 1170, 450], outline=LINE, width=2)
+    d.text((620, 166), "Summary", font=f(20, True), fill=INK)
+    for i, (k, v) in enumerate([("Amount", "$250.00"), ("Fee", "$0.00"),
+                                ("Sent today", "$0.00 of $2,500.00"), ("Arrives", "Instantly")]):
         d.text((620, 214 + i * 42), k, font=f(18), fill=MUTED)
-        d.text((960, 214 + i * 42), v, font=f(18), fill=INK)
-    d.line([620, 390, 1150, 390], fill=LINE, width=2)
-    d.text((620, 404), "Total to settle", font=f(20, True), fill=INK)
-    d.text((960, 404), "R 12 450.00", font=f(20, True), fill=INK)
-    button(d, 24, 540, "Settle now")
-    button(d, 280, 540, "Cancel", primary=False, w=150)
-    d.text((24, 620), "Only users with the Settlement Supervisor role see “Settle now”.", font=f(16), fill=MUTED)
-    d.text((24, 648), "Hidden when feature flag INSTANT_SETTLEMENT is off.", font=f(16), fill=MUTED)
+        d.text((900, 214 + i * 42), v, font=f(18), fill=INK)
+    d.line([620, 386, 1150, 386], fill=LINE, width=2)
+    d.text((620, 400), "Jordan receives", font=f(20, True), fill=INK)
+    d.text((900, 400), "$250.00", font=f(20, True), fill=INK)
+    button(d, 24, 540, "Send $250.00")
+    button(d, 280, 540, "Edit", primary=False, w=150)
+    d.text((24, 620), "Shown after the customer taps Continue. Nothing is sent until Send is tapped.", font=f(16), fill=MUTED)
+    d.text((24, 648), "Unverified customers do not see this screen; they are asked to verify their identity first.",
+           font=f(16), fill=MUTED)
     return img
 
 
-def failed_screen() -> Image.Image:
-    img, d = frame("Loan LN-20481 - settlement status")
-    d.rectangle([24, 150, 1170, 250], fill="#FEF2F2", outline=WARN, width=2)
-    d.text((48, 168), "Settlement failed after 3 attempts", font=f(22, True), fill=WARN)
-    d.text((48, 206), "Bank response: insufficient funds (code 51). Customer notified by SMS and e-mail.", font=f(17), fill=INK)
-    d.text((24, 280), "Attempts", font=f(22, True), fill=INK)
-    headers = ["#", "Time", "Method", "Result"]
-    xs = [24, 110, 420, 700]
-    for x, h in zip(xs, headers):
-        d.text((x + 12, 328), h, font=f(17, True), fill=MUTED)
-    rows = [("1", "09:00", "Instant EFT", "Failed - code 51"), ("2", "11:00", "Instant EFT", "Failed - code 51"),
-            ("3", "13:00", "Instant EFT", "Failed - code 51")]
-    for r, row in enumerate(rows):
-        y = 366 + r * 48
-        d.rectangle([24, y, 1170, y + 44], outline=LINE)
-        for x, v in zip(xs, row):
-            d.text((x + 12, y + 11), v, font=f(17), fill=INK)
-    button(d, 24, 540, "Retry settlement", w=260)
-    button(d, 310, 540, "Mark for manual follow-up", primary=False, w=330)
-    d.text((24, 620), "“Retry settlement” is enabled only for the Settlement Supervisor role.", font=f(16), fill=MUTED)
+def freeze_card_screen() -> Image.Image:
+    img, d = frame("Card ending 4821")
+    d.rounded_rectangle([24, 150, 520, 430], 18, fill="#1E3A8A")
+    d.text((52, 178), "Contoso Pay debit", font=f(20, True), fill="white")
+    d.text((52, 330), "**** **** **** 4821", font=f(24, True), fill="white")
+    d.text((52, 380), "ALEX RIVERA      12/29", font=f(18), fill="#BFDBFE")
+    d.text((24, 456), "Status: Active", font=f(20, True), fill=INK)
+    d.rectangle([600, 150, 1170, 520], fill="#F9FAFB", outline=LINE, width=2)
+    d.text((624, 170), "Freeze this card?", font=f(22, True), fill=INK)
+    for i, line in enumerate(["Card payments and ATM withdrawals will be",
+                              "declined while the card is frozen.",
+                              "Recurring payments continue unless you",
+                              "block them too."]):
+        d.text((624, 216 + i * 30), line, font=f(17), fill=INK)
+    d.rectangle([624, 350, 648, 374], outline=INK, width=2)
+    d.text((662, 350), "Also block recurring payments", font=f(17), fill=INK)
+    button(d, 624, 420, "Freeze card", w=200)
+    button(d, 846, 420, "Cancel", primary=False, w=150)
+    d.text((24, 620), "Unfreeze asks for the customer's PIN or biometrics.", font=f(16), fill=MUTED)
+    d.text((24, 648), "Card status in the app updates within 5 seconds of the change.", font=f(16), fill=MUTED)
     return img
 
 
@@ -111,83 +117,92 @@ def add_table(document, rows):
                 cell.paragraphs[0].runs[0].bold = True
 
 
-def change_request(settle_png: bytes):
+def criteria(document, items):
+    document.add_paragraph("Acceptance criteria", style="Heading 3")
+    for item in items:
+        document.add_paragraph(item, style="List Number")
+
+
+def requirement(document, ref, title, story, text=None):
+    document.add_heading(f"{ref} {title}", 2)
+    p = document.add_paragraph()
+    p.add_run("User story: ").bold = True
+    p.add_run(story).italic = True
+    if text:
+        document.add_paragraph(text)
+
+
+def specification(send_png: bytes):
     d = docx.Document()
     d.styles["Normal"].font.name = "Calibri"
     d.styles["Normal"].font.size = Pt(11)
-    d.add_heading("Contoso Lend – Change Request CR-2026-014: Loan Settlement Logic V1.0", 0)
-    add_table(d, [["Field", "Value"], ["System", "Contoso Lend Loan Management System (LMS)"],
-                  ["Change request", "CR-2026-014 Loan Settlement Logic V1.0"], ["Requested", "23 September 2026"],
-                  ["Requested by", "Head of Collections"], ["Priority", "High"]])
+    d.add_heading("Contoso Pay – Functional Specification FSD-2026-031: Wallet Enhancements V1.0", 0)
+    add_table(d, [["Field", "Value"], ["System", "Contoso Pay Mobile App"],
+                  ["Document", "FSD-2026-031 Wallet Enhancements V1.0"], ["Requested", "2 November 2026"],
+                  ["Requested by", "Head of Digital Channels"], ["Priority", "High"]])
 
     d.add_heading("1. Background", 1)
-    d.add_paragraph("Customers increasingly want to settle loans early through the Operations team. Today settlement is "
-                    "manual, takes up to five business days and conflicts with the nightly debit order run. This change "
-                    "introduces instant settlement, automatic retries for failed settlements and refunds of overpayments.")
+    d.add_paragraph("Contoso Pay is a fictional mobile wallet. Account-takeover attempts rose last quarter, and customers ask "
+                    "for faster ways to pay friends and to withdraw money. This release locks accounts after repeated "
+                    "failed sign-ins, adds instant transfers and an instant withdrawal option, and lets customers freeze "
+                    "a misplaced card from the app.")
+
     d.add_heading("2. Scope", 1)
-    for item in ["Restrict new loan applications while debit order processing runs.", "Instant settlement by EFT or card.",
-                 "Retry failed settlements automatically.", "Refund overpayments after settlement.",
-                 "Permissions and a feature flag for the new functions."]:
+    for item in ["Account lockout after failed sign-in attempts.", "Send money to another Contoso Pay customer.",
+                 "Instant withdrawal to a saved bank account, with a fee.", "Freeze and unfreeze a card from the app."]:
         d.add_paragraph(item, style="List Bullet")
 
     d.add_heading("3. Functional requirements", 1)
-    d.add_heading("FR-01 Loan application restriction during debit order processing", 2)
-    d.add_paragraph("While the debit order processing batch runs (normally 01:00–04:00), customers with an active V1 or V2 "
-                    "loan product must not be able to submit a new loan application, and the Apply option must be hidden "
-                    "for their other products. When the batch completes, the Preapproved Service sends a reactivation "
-                    "message and limits become active again.")
-    d.add_paragraph("Acceptance criteria", style="Heading 3")
-    for ac in ["Given a customer with an active V2 loan and debit order processing in progress, when they submit a new "
-               "application, then the submission is blocked and all product limits show as Expired.",
-               "The same restriction applies to customers with a V1 (CMS Service V1) loan product.",
-               "After processing completes and the reactivation message is received, the customer can apply again.",
-               "A customer whose debit order was only partly recovered stays in arrears and remains blocked, with an "
-               "arrears-related message."]:
-        d.add_paragraph(ac, style="List Number")
 
-    d.add_heading("FR-02 Instant settlement", 2)
-    d.add_paragraph("An Operations user with the Settlement Supervisor role can settle a loan in full from the Settle loan "
-                    "screen (see wireframe below). The system shows a settlement quote (capital, interest to date, fees) "
-                    "valid until 23:59 on the day it is created. Supported methods are Instant EFT and debit card. "
-                    "The settlement amount must equal the quote total; partial settlement is not allowed. On success the "
-                    "loan status changes to Settled within 60 seconds and the customer receives an SMS and e-mail confirmation.")
-    d.add_picture(io.BytesIO(settle_png), width=Cm(15))
-    d.add_paragraph("Figure 1 – Settle loan screen (wireframe)").italic = True
+    requirement(d, "FR-01", "Account lockout after failed sign-in attempts",
+                "As a Contoso Pay customer, I want my account to be locked after several failed sign-in attempts so "
+                "that nobody can guess my password.")
+    criteria(d, ["After 5 consecutive failed sign-in attempts, the account is locked for 15 minutes.",
+                 "While locked, sign-in is refused even with the correct password, and the message says when the "
+                 "customer can try again.",
+                 "A successful sign-in resets the failed-attempt counter."])
 
-    d.add_heading("FR-03 Failed settlement retries", 2)
-    d.add_paragraph("If a settlement payment fails, the system retries automatically up to 3 times at 2-hour intervals. "
-                    "Bank response codes 51 (insufficient funds) and 91 (issuer unavailable) are retryable; code 14 "
-                    "(invalid account) is not retried. After the final failed attempt the loan status becomes "
-                    "Settlement Failed, the customer is notified, and a Settlement Supervisor can retry manually or mark "
-                    "the loan for manual follow-up.")
+    requirement(d, "FR-02", "Send money to a contact",
+                "As a verified customer, I want to send money to another Contoso Pay user so that I can pay friends "
+                "instantly.",
+                "A verified customer can send money to another Contoso Pay customer from their balance. Before sending, "
+                "the customer sees a confirmation screen with the recipient's name and the amount (see Figure 1). The "
+                "minimum transfer is $1.00 and a verified customer can send up to $2,500.00 per day in total. If the "
+                "balance is lower than the amount, the transfer is blocked with the message \"Insufficient balance\".")
+    d.add_picture(io.BytesIO(send_png), width=Cm(15))
+    d.add_paragraph("Figure 1 – Send money confirmation screen (wireframe)").italic = True
 
-    d.add_heading("FR-04 Refunds and reversals", 2)
-    d.add_paragraph("If the amount received is higher than the settlement quote, the overpayment is refunded to the source "
-                    "account within 2 business days. Overpayments of R10.00 or less are not refunded; they are written off "
-                    "to the sundry income account. A settlement reversed by the bank within 40 days reopens the loan with "
-                    "its previous balance and status, and the instalment schedule is restored.")
+    requirement(d, "FR-03", "Instant withdrawal fee",
+                "As a customer, I want to see the instant withdrawal fee before I confirm so that there are no "
+                "surprises.",
+                "Customers can withdraw their balance to a saved bank account instantly for a fee. The fee and the "
+                "amount the customer will receive are shown before they confirm.")
     add_table(d, [["Rule", "Condition", "Outcome"],
-                  ["BR-04.1", "Overpayment > R10.00", "Refund to source account within 2 business days"],
-                  ["BR-04.2", "Overpayment ≤ R10.00", "Write off to sundry income"],
-                  ["BR-04.3", "Bank reversal ≤ 40 days after settlement", "Reopen loan, restore balance and schedule"],
-                  ["BR-04.4", "Bank reversal > 40 days after settlement", "Route to Collections for manual review"]])
+                  ["BR-03.1", "Instant withdrawal", "Fee is 1.5% of the amount"],
+                  ["BR-03.2", "1.5% of the amount is below $0.25", "Fee is $0.25 (minimum)"],
+                  ["BR-03.3", "1.5% of the amount is above $15.00", "Fee is $15.00 (maximum)"],
+                  ["BR-03.4", "Any fee or amount", "Rounded to the nearest cent"]])
 
-    d.add_heading("FR-05 Permissions and feature flag", 2)
-    d.add_paragraph("Only the Settlement Supervisor role can see and use Settle now and Retry settlement. Every settlement, "
-                    "retry, refund and reversal is written to the audit log with user, time, loan and amount. All new "
-                    "functions are behind the feature flag INSTANT_SETTLEMENT; when it is off the screens behave as today.")
+    requirement(d, "FR-04", "Freeze and unfreeze a card",
+                "As a customer who misplaced my card, I want to freeze it from the app so that nobody can use it while "
+                "I look for it.",
+                "A customer can freeze their card from the card screen with one tap and a confirmation (see the "
+                "separate card wireframe). While frozen, card payments and ATM withdrawals are declined. Recurring "
+                "payments already set up continue unless the customer chooses to block them too. Unfreezing requires "
+                "the customer's PIN or biometrics.")
 
     d.add_heading("4. Out of scope", 1)
-    d.add_paragraph("Customer self-service settlement in the mobile app; changes to the debit order batch schedule.")
-    d.save(OUT / "CR-2026-014 Loan Settlement Logic V1.0.docx")
+    d.add_paragraph("Transfers to people outside Contoso Pay; standard (free) withdrawals, which are unchanged; changes "
+                    "to card limits; the web banking channel.")
+    d.save(OUT / DOC_NAME)
 
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    settle, failed = settle_screen(), failed_screen()
-    settle.save(OUT / "wireframe-settle-loan.png")
-    failed.save(OUT / "wireframe-settlement-failed.png")
-    change_request(png(settle))
+    send, freeze = send_money_screen(), freeze_card_screen()
+    send.save(OUT / "wireframe-send-money.png")
+    freeze.save(OUT / "wireframe-freeze-card.png")
+    specification(png(send))
     print("wrote", sorted(p.name for p in OUT.iterdir()))
 
 
