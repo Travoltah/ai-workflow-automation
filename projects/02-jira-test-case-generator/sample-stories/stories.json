@@ -1,0 +1,183 @@
+[
+  {
+    "id": "S01",
+    "summary": "Lock the account after repeated failed sign-in attempts",
+    "description": "As a Contoso Pay customer, I want my account to be locked after several failed sign-in attempts so that nobody can guess my password.",
+    "acceptanceCriteria": [
+      "After 5 consecutive failed sign-in attempts, the account is locked for 15 minutes.",
+      "While locked, sign-in is refused even with the correct password, and the message says when the customer can try again.",
+      "A successful sign-in resets the failed-attempt counter.",
+      "The customer receives an email alert when the account is locked."
+    ]
+  },
+  {
+    "id": "S02",
+    "summary": "Reset a forgotten password by email",
+    "description": "As a customer who forgot my password, I want to reset it with a link sent to my email so that I can get back into my account.",
+    "acceptanceCriteria": [
+      "The reset link is sent only to the email address registered on the account.",
+      "The reset link expires after 30 minutes and can be used only once.",
+      "The new password must be at least 12 characters and include a number and a symbol.",
+      "The new password cannot be the same as any of the last 3 passwords.",
+      "All other active sessions are signed out after a successful reset."
+    ]
+  },
+  {
+    "id": "S03",
+    "summary": "Verify sign-in with a one-time SMS code",
+    "description": "As a customer, I want to confirm new sign-ins with a code sent to my phone so that my account is protected even if my password leaks.",
+    "acceptanceCriteria": [
+      "A 6-digit code is sent by SMS when the customer signs in on a new device.",
+      "The code is valid for 5 minutes.",
+      "After 3 wrong codes, a new code must be requested.",
+      "The customer can request a new code at most once every 60 seconds."
+    ]
+  },
+  {
+    "id": "S04",
+    "summary": "Send money to a contact",
+    "description": "As a verified customer, I want to send money to another Contoso Pay user so that I can pay friends instantly.",
+    "acceptanceCriteria": [
+      "The minimum transfer amount is $1.00.",
+      "A verified customer can send up to $2,500 per day in total.",
+      "If the balance is lower than the amount, the transfer is blocked with an 'Insufficient balance' message.",
+      "The customer sees a confirmation screen with the recipient's name and amount before sending.",
+      "Both sender and recipient get a notification when the transfer completes."
+    ]
+  },
+  {
+    "id": "S05",
+    "summary": "Add a bank account as a withdrawal destination",
+    "description": "As a customer, I want to add my bank account so that I can withdraw my balance to it.",
+    "acceptanceCriteria": [
+      "Account holder name, routing number and account number are required.",
+      "The routing number must be exactly 9 digits.",
+      "The account number must be between 8 and 12 digits.",
+      "The account cannot be used for withdrawals until two micro-deposits are confirmed.",
+      "A customer can save at most 3 bank accounts."
+    ]
+  },
+  {
+    "id": "S06",
+    "summary": "Show the instant withdrawal fee before confirming",
+    "description": "As a customer, I want to see the instant withdrawal fee before I confirm so that there are no surprises.",
+    "acceptanceCriteria": [
+      "The instant withdrawal fee is 1.5% of the amount, with a minimum of $0.25 and a maximum of $15.00.",
+      "The fee and the amount the customer will receive are shown before confirming.",
+      "Standard withdrawals (1 to 3 business days) are free and offered as an alternative.",
+      "Amounts are rounded to the nearest cent."
+    ]
+  },
+  {
+    "id": "S07",
+    "summary": "Filter and export transaction history",
+    "description": "As a customer, I want to filter my transaction history and export it so that I can do my budgeting and taxes.",
+    "acceptanceCriteria": [
+      "The customer can filter by date range, transaction type and amount range.",
+      "The date range cannot be longer than 12 months.",
+      "The filtered results can be exported as a CSV file.",
+      "If no transactions match, a 'No transactions found' message is shown and export is disabled."
+    ]
+  },
+  {
+    "id": "S08",
+    "summary": "Freeze and unfreeze my card from the app",
+    "description": "As a customer who misplaced my card, I want to freeze it from the app so that nobody can use it while I look for it.",
+    "acceptanceCriteria": [
+      "The customer can freeze the card from the card screen with one tap and a confirmation.",
+      "While frozen, card payments and ATM withdrawals are declined.",
+      "Recurring payments already set up continue unless the customer chooses to block them too.",
+      "Unfreezing requires the customer to confirm with their PIN or biometrics.",
+      "The card status shown in the app updates within 5 seconds."
+    ]
+  },
+  {
+    "id": "S09",
+    "summary": "Choose which notifications I receive",
+    "description": "As a customer, I want to choose how I get notified so that I only receive what matters to me.",
+    "acceptanceCriteria": [
+      "The customer can switch push and email notifications on or off separately for payments, marketing and account activity.",
+      "Security alerts (new device sign-in, password change) cannot be switched off.",
+      "Changes are saved immediately and apply to the next notification.",
+      "Marketing notifications are off by default for new customers."
+    ]
+  },
+  {
+    "id": "S10",
+    "summary": "Change the email address on my profile",
+    "description": "As a customer, I want to update my email address so that I keep receiving receipts and alerts.",
+    "acceptanceCriteria": [
+      "The new email address must be verified with a link before it replaces the old one.",
+      "The verification link expires after 24 hours.",
+      "A notice is sent to the old email address when the change is requested.",
+      "An email address already used by another account is rejected."
+    ]
+  },
+  {
+    "id": "S11",
+    "summary": "Split a bill with friends",
+    "description": "As a customer, I want to split a payment with friends so that everyone pays their share.",
+    "acceptanceCriteria": [
+      "A bill can be split between 2 and 10 people, including the customer.",
+      "The bill can be split equally or by custom amounts.",
+      "With custom amounts, the shares must add up exactly to the bill total before the request can be sent.",
+      "With an equal split, any leftover cent is added to the customer's own share.",
+      "Each person receives a payment request they can accept or decline."
+    ]
+  },
+  {
+    "id": "S12",
+    "summary": "Sign out automatically after inactivity",
+    "description": "As a customer, I want the app to sign me out when I leave it idle so that nobody can use my account on an unattended device.",
+    "acceptanceCriteria": [
+      "The session ends after 10 minutes without activity.",
+      "A warning with a 'Stay signed in' button appears after 9 minutes.",
+      "Tapping 'Stay signed in' restarts the 10-minute timer.",
+      "Any unsaved transfer form is discarded when the session ends."
+    ]
+  },
+  {
+    "id": "S13",
+    "summary": "Dispute a card transaction",
+    "description": "As a customer, I want to dispute a card transaction I don't recognise so that I can get my money back.",
+    "acceptanceCriteria": [
+      "Only card transactions from the last 60 days can be disputed.",
+      "The customer must choose a reason and can attach up to 3 files of at most 5 MB each.",
+      "A transaction can only be disputed once.",
+      "The customer gets a case number and sees the dispute status as Open, Under review, Resolved or Rejected."
+    ]
+  },
+  {
+    "id": "S14",
+    "summary": "Make the payment screen accessible to screen-reader users",
+    "description": "As a customer who uses a screen reader, I want the payment screen to be fully accessible so that I can send money on my own.",
+    "acceptanceCriteria": [
+      "Every input field and button has an accessible name read aloud by VoiceOver and TalkBack.",
+      "Validation errors are announced when they appear and are linked to the field they belong to.",
+      "All actions can be completed with a keyboard or switch control, in a logical focus order.",
+      "Text and controls meet a colour contrast ratio of at least 4.5:1."
+    ]
+  },
+  {
+    "id": "S15",
+    "summary": "Display amounts in the customer's currency format",
+    "description": "As a customer, I want amounts shown in a format I understand so that I don't misread a payment.",
+    "acceptanceCriteria": [
+      "Amounts always show 2 decimal places.",
+      "The currency symbol and thousands separator follow the customer's region setting (for example $1,234.56 in the US).",
+      "Negative amounts (money going out) are shown with a minus sign and in red.",
+      "Amounts of $1,000,000 or more are displayed in full, never abbreviated."
+    ]
+  },
+  {
+    "id": "S16",
+    "summary": "Reward customers who refer a friend",
+    "description": "As a customer, I want to earn a bonus when I refer a friend so that I'm rewarded for spreading the word.",
+    "acceptanceCriteria": [
+      "Each customer has one personal referral code.",
+      "The referrer and the friend each get a $10 bonus after the friend's first transfer of at least $20.",
+      "A customer cannot use their own referral code.",
+      "A customer can earn at most 10 referral bonuses per calendar year."
+    ]
+  }
+]
