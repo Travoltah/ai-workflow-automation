@@ -1,0 +1,47 @@
+# Self-hosted stack for the requirements-to-test-script workflow:
+#   n8n (workflow)  +  test-script service (reads Word/PDF/images/Figma, writes the Excel test script)
+#   + mock Jira (optional, for demos without a Jira site: docker compose --profile demo up -d)
+# Start:  docker compose up -d --build      Stop:  docker compose stop      Wipe data:  docker compose down -v
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:2.47.7
+    restart: unless-stopped
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    environment:
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      WEBHOOK_URL: http://localhost:${N8N_PORT:-5678}/
+      GENERIC_TIMEZONE: ${TIMEZONE:-America/Phoenix}
+      TZ: ${TIMEZONE:-America/Phoenix}
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      # Uploaded documents travel through the workflow as base64; allow large FSDs.
+      N8N_PAYLOAD_SIZE_MAX: "64"
+      N8N_FORMDATA_FILE_SIZE_MAX: "50"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      testscript-service:
+        condition: service_healthy
+
+  testscript-service:
+    build: ./service
+    restart: unless-stopped
+    environment:
+      OUTPUT_DIR: /output
+      FIGMA_TOKEN: ${FIGMA_TOKEN:-}
+    volumes:
+      - ./output:/output           # every Excel test script is also saved here
+    # No published port: only n8n talks to it, inside the Docker network.
+
+  mock-jira:
+    profiles: ["demo"]
+    image: python:3.12-slim
+    command: ["python", "-u", "/scripts/mock_jira.py", "--port", "8089"]
+    volumes:
+      - ./scripts:/scripts:ro
+    ports:
+      - "8089:8089"                # open http://localhost:8089/browse/CPAY-1 to look at tickets
+
+volumes:
+  n8n_data:

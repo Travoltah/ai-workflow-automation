@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" font-family="Inter, system-ui, sans-serif">
+  <defs>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-opacity="0.04"/>
+    </pattern>
+    <radialGradient id="glowT" cx="90%" cy="85%" r="45%"><stop offset="0" stop-color="#22C55E" stop-opacity="0.22"/><stop offset="1" stop-color="#22C55E" stop-opacity="0"/></radialGradient>
+    <radialGradient id="glowB" cx="6%" cy="10%" r="40%"><stop offset="0" stop-color="#3B82F6" stop-opacity="0.25"/><stop offset="1" stop-color="#3B82F6" stop-opacity="0"/></radialGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5EEAD4"/></marker>
+  </defs>
+
+  <rect width="1200" height="675" fill="#0B1530"/>
+  <rect width="1200" height="675" fill="url(#grid)"/>
+  <rect width="1200" height="675" fill="url(#glowT)"/>
+  <rect width="1200" height="675" fill="url(#glowB)"/>
+
+  <text x="60" y="74" fill="#94A3B8" font-size="18" font-weight="600" letter-spacing="5">AI WORKFLOW AUTOMATION · QA · n8n</text>
+  <text x="60" y="126" fill="#FFFFFF" font-size="44" font-weight="800">Requirements to Test Script</text>
+  <text x="60" y="164" fill="#5EEAD4" font-size="21" font-weight="600">FSD / Change Request in · Jira stories, linked QA tickets and an Excel test script out</text>
+
+  <!-- Inputs -->
+  <g font-size="15" font-weight="700" text-anchor="middle">
+    <rect x="50" y="214" width="160" height="58" rx="12" fill="#111E40" stroke="#3B82F6"/>
+    <text x="130" y="240" fill="#FFFFFF">FSD / CR</text>
+    <text x="130" y="259" fill="#94A3B8" font-size="12" font-weight="500">Word or PDF</text>
+    <rect x="50" y="286" width="160" height="58" rx="12" fill="#111E40" stroke="#3B82F6"/>
+    <text x="130" y="312" fill="#FFFFFF">Wireframes</text>
+    <text x="130" y="331" fill="#94A3B8" font-size="12" font-weight="500">images, PDF, Figma link</text>
+    <rect x="50" y="358" width="160" height="58" rx="12" fill="#111E40" stroke="#3B82F6"/>
+    <text x="130" y="384" fill="#FFFFFF">Jira story keys</text>
+    <text x="130" y="403" fill="#94A3B8" font-size="12" font-weight="500">read, never recreated</text>
+  </g>
+
+  <!-- Flow -->
+  <g font-size="16" font-weight="700" text-anchor="middle">
+    <rect x="262" y="250" width="176" height="96" rx="14" fill="#8B5CF6"/>
+    <text x="350" y="282" fill="#FFFFFF">Claude as BA</text>
+    <text x="350" y="304" fill="#EDE9FE" font-size="12.5" font-weight="500">user stories +</text>
+    <text x="350" y="321" fill="#EDE9FE" font-size="12.5" font-weight="500">acceptance criteria</text>
+    <text x="350" y="338" fill="#EDE9FE" font-size="11.5" font-weight="500">(writes missing ones)</text>
+
+    <rect x="486" y="250" width="176" height="96" rx="14" fill="#0F766E"/>
+    <text x="574" y="282" fill="#FFFFFF">Jira stories</text>
+    <text x="574" y="304" fill="#CCFBF1" font-size="12.5" font-weight="500">create new ones</text>
+    <text x="574" y="321" fill="#CCFBF1" font-size="12.5" font-weight="500">reuse earlier runs</text>
+    <text x="574" y="338" fill="#CCFBF1" font-size="12.5" font-weight="500">read typed keys</text>
+
+    <rect x="710" y="250" width="176" height="96" rx="14" fill="#8B5CF6"/>
+    <text x="798" y="282" fill="#FFFFFF">Claude as QA</text>
+    <text x="798" y="304" fill="#EDE9FE" font-size="12.5" font-weight="500">test cases per story</text>
+    <text x="798" y="321" fill="#EDE9FE" font-size="12.5" font-weight="500">in parallel</text>
+    <text x="798" y="338" fill="#FDE68A" font-size="12.5" font-weight="600">+ quality gate</text>
+  </g>
+  <g stroke-width="2.5" fill="none">
+    <path d="M210 243C236 243 236 290 254 294" stroke="#5EEAD4" marker-end="url(#arrow)"/>
+    <path d="M210 315H254" stroke="#5EEAD4" marker-end="url(#arrow)"/>
+    <path d="M210 387C250 387 470 400 520 352" stroke="#5EEAD4" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+    <path d="M438 298H478" stroke="#5EEAD4" marker-end="url(#arrow)"/>
+    <path d="M662 298H702" stroke="#5EEAD4" marker-end="url(#arrow)"/>
+    <path d="M886 278C914 278 910 232 936 232" stroke="#5EEAD4" marker-end="url(#arrow)"/>
+    <path d="M886 318C914 318 910 364 936 364" stroke="#5EEAD4" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- Outputs -->
+  <g font-size="15" font-weight="700">
+    <rect x="944" y="196" width="210" height="72" rx="12" fill="#111E40" stroke="#14B8A6" stroke-width="2"/>
+    <text x="962" y="224" fill="#FFFFFF">QA ticket per story</text>
+    <text x="962" y="244" fill="#94A3B8" font-size="12" font-weight="500">linked to the story, full steps</text>
+    <text x="962" y="259" fill="#94A3B8" font-size="12" font-weight="500">existing one? add a comment</text>
+    <rect x="944" y="328" width="210" height="72" rx="12" fill="#15803D"/>
+    <text x="962" y="356" fill="#FFFFFF">Excel test script</text>
+    <text x="962" y="376" fill="#DCFCE7" font-size="12" font-weight="500">Summary + sheet per section</text>
+    <text x="962" y="391" fill="#DCFCE7" font-size="11.5" font-weight="500">PASS / FAIL / PENDING / BLOCKED</text>
+  </g>
+
+  <!-- Sheet mock -->
+  <g font-size="12" font-weight="600">
+    <rect x="262" y="440" width="892" height="134" rx="12" fill="#111E40" stroke="#334155"/>
+    <rect x="262" y="440" width="892" height="30" rx="12" fill="#1F3864"/>
+    <rect x="262" y="458" width="892" height="12" fill="#1F3864"/>
+    <g fill="#FFFFFF">
+      <text x="276" y="460">ID #</text><text x="340" y="460">Function / Module</text><text x="478" y="460">Test Type</text>
+      <text x="566" y="460">Test Scenario</text><text x="790" y="460">Preconditions / Data / Steps</text><text x="1008" y="460">Expected</text><text x="1092" y="460">Results</text>
+    </g>
+    <g fill="#CBD5E1" font-weight="500">
+      <text x="276" y="496">SL-001</text><text x="340" y="496">Loan Application</text><text x="478" y="496">Functional</text>
+      <text x="566" y="496">V2 application blocked during debit run</text><text x="790" y="496">Preconditions: active V2 loan…</text><text x="1008" y="496">Blocked</text>
+      <text x="276" y="526">SL-014</text><text x="340" y="526">Instant Settlement</text><text x="478" y="526">Boundary</text>
+      <text x="566" y="526">Quote expires at 23:59 on the same day</text><text x="790" y="526">Steps: 1. Open Settle loan…</text><text x="1008" y="526">New quote</text>
+      <text x="276" y="556">SL-031</text><text x="340" y="556">Settlement Retry</text><text x="478" y="556">Negative</text>
+      <text x="566" y="556">Code 14 is not retried</text><text x="790" y="556">Test data: response code 14</text><text x="1008" y="556">Not retried</text>
+    </g>
+    <rect x="1084" y="482" width="62" height="20" rx="4" fill="#C6EFCE"/><text x="1093" y="497" fill="#006100" font-weight="700">PASS</text>
+    <rect x="1084" y="512" width="62" height="20" rx="4" fill="#E2E8F0"/><text x="1088" y="527" fill="#334155" font-weight="700">PENDING</text>
+    <rect x="1084" y="542" width="62" height="20" rx="4" fill="#FFC7CE"/><text x="1095" y="557" fill="#9C0006" font-weight="700">FAIL</text>
+  </g>
+
+  <!-- Stat chips -->
+  <g font-size="14" font-weight="700" text-anchor="middle">
+    <rect x="50" y="450" width="180" height="38" rx="19" fill="#14B8A6" fill-opacity="0.15" stroke="#14B8A6"/>
+    <text x="140" y="474" fill="#5EEAD4">No duplicate tickets</text>
+    <rect x="50" y="498" width="180" height="38" rx="19" fill="#3B82F6" fill-opacity="0.15" stroke="#3B82F6"/>
+    <text x="140" y="522" fill="#93C5FD">AC → test traceability</text>
+    <rect x="50" y="546" width="180" height="38" rx="19" fill="#FCD34D" fill-opacity="0.12" stroke="#FCD34D"/>
+    <text x="140" y="570" fill="#FDE68A">Works without Jira</text>
+  </g>
+  <text x="60" y="630" fill="#64748B" font-size="13" font-weight="500">n8n · Claude Opus 5.5 (structured JSON output) · Jira Cloud REST API · Python service (python-docx, openpyxl) · Docker Compose</text>
+</svg>

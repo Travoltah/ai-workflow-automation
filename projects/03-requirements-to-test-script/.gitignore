@@ -1,0 +1,7 @@
+.env
+output/
+service/__pycache__/
+service/tests/__pycache__/
+.pytest_cache/
+# Office lock files
+~$*
