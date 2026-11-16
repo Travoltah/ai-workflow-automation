@@ -1,0 +1,556 @@
+{
+ "settings": {
+  "model": "claude-opus-5-5",
+  "siteUrl": "http://host.docker.internal:3000",
+  "linkedinApi": "http://mock-linkedin:8000",
+  "linkedinVersion": "202610",
+  "readComments": true
+ },
+ "author": {
+  "name": "Trevor Kauyu",
+  "headline": "Data Quality & AI Assurance Engineer",
+  "summary": "I'm a Data Quality and AI Assurance professional with **9+ years** of experience testing, validating and strengthening the reliability of software, data pipelines and AI-enabled systems across **financial services and higher education**.\n\nI'm currently pursuing a **Master of Global Management in Data Science** at Thunderbird School of Global Management (Arizona State University), where I also lead the Thunderbird Data Analytics Club and serve as VP of Technology for the Thunderbird AI Club.\n\nMy work sits where quality engineering meets data and AI governance: automated testing, data validation, disaster recovery, shift-left quality, and workflow automation. I write about data quality, data security and responsible AI, because good AI starts with good data."
+ },
+ "drafts": [
+  {
+   "request": {
+    "id": "cmwjr354d0000nk1sqpxo06ce",
+    "format": "ARTICLE",
+    "topic": "Test data is a data governance problem"
+   },
+   "response": {
+    "model": "claude-opus-5-5",
+    "id": "msg_011Ch7HRpPfXevQK9xd2Vi5f",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+     {
+      "type": "thinking",
+      "thinking": "",
+      "signature": "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"
+     },
+     {
+      "type": "text",
+      "text": "{\"topic\":\"Test data as a data governance problem\",\"title\":\"Test Data Is a Data Governance Problem\",\"slug\":\"test-data-is-a-data-governance-problem\",\"excerpt\":\"Copying production data into test environments creates privacy risk and weak tests, so test data needs owners, rules and quality checks just like production data.\",\"tags\":[\"TestData\",\"DataGovernance\",\"DataQuality\",\"DataPrivacy\",\"QualityEngineering\"],\"article\":\"*In my years doing QA and test automation on a fintech platform, I lost count of the times someone said, \\\"Just copy prod into test, it's quicker.\\\" I've said it too.*\\n\\nIt is quicker. For about a week.\\n\\nThen you have real customer names, account numbers and transaction histories sitting in an environment with wider access, shared logins and nobody watching the logs. And the tests often aren't any better for it.\\n\\nI think we've been treating test data as a QA chore. It's a data governance problem.\\n\\n## Why teams copy production data\\n\\nThe reasons are usually fair. Building test data by hand is slow. Production data looks realistic. It already has the relationships between tables that are hard to fake. And when a release is due Friday, nobody wants to write a data generator.\\n\\nSo a refresh script gets written once, scheduled and forgotten. Every month, a fresh copy of production lands in test.\\n\\n## The privacy problem\\n\\nTest environments are built for speed, not protection. In most places I've seen:\\n\\n- **Access is wide.** Developers, testers, contractors and vendors can often reach test databases they'd never be allowed near in production.\\n- **Controls are lighter.** Masking, encryption and monitoring are set up for production first. Test gets them \\\"later.\\\"\\n- **Copies multiply.** One refresh becomes a local export, a spreadsheet attached to a defect ticket, a dump on a shared drive for a demo.\\n- **Nobody owns it.** When someone asks where a customer's personal data lives, test environments are often missing from the answer.\\n\\nIn financial services, that's a real exposure. Privacy rules don't make an exception because the data was \\\"only in test.\\\"\\n\\n## The quality problem\\n\\nThis is the part people talk about less. Production data often makes for weak tests.\\n\\nReal data shows what usually happens. Tests need to cover what rarely happens. A copy of last month's transactions might not include a leap-year date, a negative balance, a name with an apostrophe, a currency with three decimal places or an account closed and reopened on the same day. Those are the cases that break things.\\n\\nProduction copies also change under you. A test that passed last month fails this month because the record it relied on was updated. Now you're debugging the data, not the code.\\n\\n> **Real data tells you what usually happens. Good test data tells you what could happen.**\\n\\n{{INFOGRAPHIC}}\\n\\n## Test data needs the same governance as production\\n\\nIf test data can leak, and test data decides whether a release is safe, then it needs the same basics we expect for production data:\\n\\n- **An owner.** Someone accountable for what's in each test environment, where it came from and when it gets cleaned up.\\n- **Rules.** Clear policy on what may be copied, what must be masked, who can access it and how long it's kept.\\n- **Quality checks.** Validation that test data covers the cases it's meant to cover, stays consistent across systems and hasn't drifted.\\n- **Lineage.** A record of which source a dataset came from and what was done to it.\\n\\nNone of this is new. We already do it for production. We just stop at the environment boundary.\\n\\n## What teams can do\\n\\nYou don't need to fix everything at once. A few habits go a long way:\\n\\n1. **Find what's there.** List your test environments and check which ones hold real personal data. Include old backups and exports.\\n2. **Mask by default.** If production data must be used, mask or tokenize it before it lands in test, not after.\\n3. **Build synthetic data for edge cases.** Generate the boundary values, invalid formats and rare states you need. Version them like code.\\n4. **Treat test data as an artifact.** Keep the scripts that create it in the repository, review them and run checks on them in the pipeline.\\n5. **Set an expiry.** Every copy should have an end date and someone who deletes it.\\n\\nThis is shift-left applied to data. Catch the risk where the data is created, not after it has spread.\\n\\n## Final thought\\n\\nCopying production into test feels like a shortcut. It trades a small saving now for privacy risk and tests that miss the cases that matter. Test data shapes the quality of everything we ship, so it deserves an owner, rules and checks of its own.\\n\\n*How does your team handle test data today? Do you copy production, generate synthetic data or something in between, and who actually owns it?*\",\"linkedin_post\":\"\\\"Just copy prod into test, it's quicker.\\\" I've heard that line for years. I've said it too.\\n\\nIt is quicker. For about a week.\\n\\nThen real customer data is sitting in an environment with wider access, lighter controls and no clear owner. Copies spread into local exports, defect tickets and demo folders. Privacy rules don't care that it was \\\"only in test.\\\"\\n\\nThere's a second problem people mention less. Production data makes weak tests. It shows what usually happens. Tests need to cover what rarely happens: a negative balance, a leap-year date, a name with an apostrophe, an account closed and reopened on the same day.\\n\\nMy view after years of QA and test automation in fintech: test data is a data governance problem. It needs an owner, rules on what can be copied and masked, quality checks on coverage, and an expiry date.\\n\\nI wrote about why, and what teams can start doing this sprint.\\n\\n{{LINK}}\\n\\nWho owns the test data in your organization? Is it a named person, or is it whoever ran the last refresh script?\\n\\n#TestData #DataGovernance #DataQuality #DataPrivacy\",\"cover\":{\"eyebrow\":\"Data quality and governance\",\"title\":\"Test Data Is a Governance Problem\",\"highlight\":\"Governance Problem\",\"subtitle\":\"Production copies in test create privacy risk and weak tests.\",\"caption\":\"Test data needs owners, rules and checks.\",\"visual\":{\"type\":\"venn\",\"center\":\"Prod copies\",\"base\":\"\",\"items\":[{\"label\":\"Privacy risk\",\"note\":\"Real customer data, weak controls\"},{\"label\":\"Weak tests\",\"note\":\"Edge cases rarely covered\"}],\"chips\":[]}},\"infographic\":{\"kicker\":\"Quality engineering meets governance\",\"subtitle\":\"Test data needs owners, rules and checks like production data.\",\"section1\":\"What governed test data needs\",\"visual\":{\"type\":\"foundation\",\"center\":\"Trustworthy testing\",\"base\":\"Governed test data\",\"items\":[{\"label\":\"Owner\",\"note\":\"\"},{\"label\":\"Rules\",\"note\":\"\"},{\"label\":\"Quality checks\",\"note\":\"\"},{\"label\":\"Lineage\",\"note\":\"\"}],\"chips\":[\"Masked\",\"Synthetic\",\"Versioned\",\"Expiring\"]},\"note_bold\":\"Real data shows the usual.\",\"note\":\"Good test data shows what could happen.\",\"bad_title\":\"When test data is ignored\",\"bad_items\":[\"Real customer data widely exposed\",\"Edge cases never tested\",\"Tests fail as data changes\",\"Copies spread with no owner\"],\"good_title\":\"When test data is governed\",\"good_items\":[\"Personal data masked by default\",\"Edge cases built in deliberately\",\"Stable, versioned test datasets\",\"Clear owner and expiry dates\"],\"section2\":\"Five steps to govern test data\",\"cards\":[{\"label\":\"Inventory\",\"text\":\"Find test environments holding real personal data.\"},{\"label\":\"Masking\",\"text\":\"Mask production data before it lands in test.\"},{\"label\":\"Synthetic\",\"text\":\"Generate edge cases real data never covers.\"},{\"label\":\"Versioning\",\"text\":\"Keep test data scripts in the repository.\"},{\"label\":\"Expiry\",\"text\":\"Give every copy an end date.\"}],\"closing\":\"Test data needs an owner too\",\"closing_highlight\":\"an owner too\"}}"
+     }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+     "input_tokens": 6886,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "output_tokens": 4507,
+     "output_tokens_details": {
+      "thinking_tokens": 1836
+     },
+     "service_tier": "standard",
+     "inference_geo": "global",
+     "speed": "standard"
+    },
+    "diagnostics": null
+   }
+  },
+  {
+   "request": {
+    "id": "cmwjr355r0001nk1smkajfh1k",
+    "format": "POST",
+    "topic": "Why AI test results need a human sign-off"
+   },
+   "response": {
+    "model": "claude-opus-5-5",
+    "id": "msg_011Ch7HRpKwuyuGki3tJ8kEg",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+     {
+      "type": "thinking",
+      "thinking": "",
+      "signature": "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"
+     },
+     {
+      "type": "text",
+      "text": "{\"topic\":\"Human sign-off for AI test results\",\"title\":\"A passing eval score is not a release decision\",\"tags\":[\"AIAssurance\",\"ResponsibleAI\",\"AIGovernance\",\"QualityEngineering\"],\"linkedin_post\":\"A passing eval score is not a release decision.\\n\\nAutomated AI evaluations are useful. I use them. They can run large sets of test prompts, compare outputs against expected answers and flag drift between model versions far faster than any person could.\\n\\nBut they only measure what someone thought to test.\\n\\nSay a model scores well on a test set built from last year's support tickets. The suite passes. Nobody asked whether this year's customers ask different questions, or whether the \\\"correct\\\" answers in that test set were ever reviewed. The score is real. The confidence it gives you might not be.\\n\\nThat's why I think a named person should own the go/no-go call. Not a dashboard. A person who reads a sample of the outputs, looks at what failed and what wasn't tested, and signs off knowing they'll be asked about it later.\\n\\nIn my own AI workflow projects, I follow a simple rule: the AI drafts, a human approves. The automation does the heavy lifting. The decision stays with someone who can explain it.\\n\\nIt's the same lesson I learned in QA. Green test runs tell you the tests passed. They don't tell you the product is ready.\\n\\nWho signs off on AI releases in your team, and what do they check beyond the eval score?\\n\\n#AIAssurance #ResponsibleAI #AIGovernance #QualityEngineering\",\"cover\":{\"eyebrow\":\"AI Assurance\",\"title\":\"Eval scores don't make release decisions\",\"highlight\":\"release decisions\",\"subtitle\":\"Automated evals inform the call. A person owns it.\",\"caption\":\"AI drafts. A human approves.\",\"visual\":{\"type\":\"flow\",\"center\":\"\",\"base\":\"\",\"items\":[{\"label\":\"Automated evals\",\"note\":\"Score outputs at scale\"},{\"label\":\"Human review\",\"note\":\"Read samples, check gaps\"},{\"label\":\"Sign-off\",\"note\":\"Named owner makes the call\"}],\"chips\":[]}}}"
+     }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+     "input_tokens": 5100,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "output_tokens": 1510,
+     "output_tokens_details": {
+      "thinking_tokens": 807
+     },
+     "service_tier": "standard",
+     "inference_geo": "global",
+     "speed": "standard"
+    },
+    "diagnostics": null
+   }
+  }
+ ],
+ "replies": [
+  {
+   "request": {
+    "id": "cmwjr6b2k0003nk1suhwxeoge"
+   },
+   "comment": {
+    "kind": "draft_reply",
+    "id": "cmwjr6b2k0003nk1suhwxeoge",
+    "authorName": "Rudo Moyo",
+    "text": "We hit exactly this last quarter. The model looked fine in testing, then a source system changed a date format and nobody noticed for three weeks. How do you get business teams to own the data checks instead of IT?",
+    "post": {
+     "title": "Test Data Is a Data Governance Problem",
+     "text": "\"Just copy prod into test, it's quicker.\" I've heard that line for years. I've said it too.\n\nIt is quicker. For about a week.\n\nThen real customer data is sitting in an environment with wider access, lighter controls and no clear owner. Copies spread into local exports, defect tickets and demo folders. Privacy rules don't care that it was \"only in test.\"\n\nThere's a second problem people mention less. Production data makes weak tests. It shows what usually happens. Tests need to cover what rarely happens: a negative balance, a leap-year date, a name with an apostrophe, an account closed and reopened on the same day.\n\nMy view after years of QA and test automation in fintech: test data is a data governance problem. It needs an owner, rules on what can be copied and masked, quality checks on coverage, and an expiry date.\n\nI wrote about why, and what teams can start doing this sprint.\n\nhttp://localhost:3000/writing/test-data-is-a-data-governance-problem\n\nWho owns the test data in your organization? Is it a named person, or is it whoever ran the last refresh script?\n\n#TestData #DataGovernance #DataQuality #DataPrivacy",
+     "excerpt": "Copying production data into test environments creates privacy risk and weak tests, so test data needs owners, rules and quality checks just like production data."
+    }
+   },
+   "response": {
+    "model": "claude-opus-5-5",
+    "id": "msg_011Ch7Hfc1B4DGUx7LTDBnyq",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+     {
+      "type": "text",
+      "text": "{\"should_reply\":true,\"should_like\":true,\"reply\":\"Three weeks hurts, Rudo. What's worked for me is having the business team write the rule in their own words, like \\\"settlement date is never in the future\\\", and IT just automates it. Once the failure alert lands in their inbox with their rule attached, ownership tends to follow.\",\"note\":\"\"}"
+     }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+     "input_tokens": 1249,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "output_tokens": 114,
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "service_tier": "standard",
+     "inference_geo": "global",
+     "speed": "standard"
+    },
+    "diagnostics": null
+   }
+  },
+  {
+   "request": {
+    "id": "cmwjr6b350005nk1st06t9nol"
+   },
+   "comment": {
+    "kind": "draft_reply",
+    "id": "cmwjr6b350005nk1st06t9nol",
+    "authorName": "Daniel Okafor",
+    "text": "Useful framing. I'd add that lineage is usually the first thing to go when teams are under delivery pressure.",
+    "post": {
+     "title": "Test Data Is a Data Governance Problem",
+     "text": "\"Just copy prod into test, it's quicker.\" I've heard that line for years. I've said it too.\n\nIt is quicker. For about a week.\n\nThen real customer data is sitting in an environment with wider access, lighter controls and no clear owner. Copies spread into local exports, defect tickets and demo folders. Privacy rules don't care that it was \"only in test.\"\n\nThere's a second problem people mention less. Production data makes weak tests. It shows what usually happens. Tests need to cover what rarely happens: a negative balance, a leap-year date, a name with an apostrophe, an account closed and reopened on the same day.\n\nMy view after years of QA and test automation in fintech: test data is a data governance problem. It needs an owner, rules on what can be copied and masked, quality checks on coverage, and an expiry date.\n\nI wrote about why, and what teams can start doing this sprint.\n\nhttp://localhost:3000/writing/test-data-is-a-data-governance-problem\n\nWho owns the test data in your organization? Is it a named person, or is it whoever ran the last refresh script?\n\n#TestData #DataGovernance #DataQuality #DataPrivacy",
+     "excerpt": "Copying production data into test environments creates privacy risk and weak tests, so test data needs owners, rules and quality checks just like production data."
+    }
+   },
+   "response": {
+    "model": "claude-opus-5-5",
+    "id": "msg_011Ch7HfbzggeXyjkexSDmz8",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+     {
+      "type": "text",
+      "text": "{\"should_reply\":true,\"should_like\":true,\"reply\":\"Agreed, Daniel. Once a copy lands in a defect ticket or someone's local export, nobody can say where it came from or whether it was masked. Even a simple tag on each refresh (source, date, masking applied) would help.\",\"note\":\"\"}"
+     }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+     "input_tokens": 1221,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "output_tokens": 101,
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "service_tier": "standard",
+     "inference_geo": "global",
+     "speed": "standard"
+    },
+    "diagnostics": null
+   }
+  },
+  {
+   "request": {
+    "id": "cmwjr6b370007nk1sext4utpw"
+   },
+   "comment": {
+    "kind": "draft_reply",
+    "id": "cmwjr6b370007nk1sext4utpw",
+    "authorName": "Growth Hacks",
+    "text": "Great post!! I help professionals get 10x more followers in 30 days. DM me 'GROW' for my free guide.",
+    "post": {
+     "title": "Test Data Is a Data Governance Problem",
+     "text": "\"Just copy prod into test, it's quicker.\" I've heard that line for years. I've said it too.\n\nIt is quicker. For about a week.\n\nThen real customer data is sitting in an environment with wider access, lighter controls and no clear owner. Copies spread into local exports, defect tickets and demo folders. Privacy rules don't care that it was \"only in test.\"\n\nThere's a second problem people mention less. Production data makes weak tests. It shows what usually happens. Tests need to cover what rarely happens: a negative balance, a leap-year date, a name with an apostrophe, an account closed and reopened on the same day.\n\nMy view after years of QA and test automation in fintech: test data is a data governance problem. It needs an owner, rules on what can be copied and masked, quality checks on coverage, and an expiry date.\n\nI wrote about why, and what teams can start doing this sprint.\n\nhttp://localhost:3000/writing/test-data-is-a-data-governance-problem\n\nWho owns the test data in your organization? Is it a named person, or is it whoever ran the last refresh script?\n\n#TestData #DataGovernance #DataQuality #DataPrivacy",
+     "excerpt": "Copying production data into test environments creates privacy risk and weak tests, so test data needs owners, rules and quality checks just like production data."
+    }
+   },
+   "response": {
+    "model": "claude-opus-5-5",
+    "id": "msg_011Ch7HfcAcMLuprwV3B2pzh",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+     {
+      "type": "text",
+      "text": "{\"should_reply\":false,\"should_like\":false,\"reply\":\"\",\"note\":\"Spam: generic praise plus a follower-growth pitch asking for DMs.\"}"
+     }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+     "input_tokens": 1223,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "output_tokens": 54,
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "service_tier": "standard",
+     "inference_geo": "global",
+     "speed": "standard"
+    },
+    "diagnostics": null
+   }
+  },
+  {
+   "request": {
+    "id": "cmwjr6b390009nk1su7l6iizr"
+   },
+   "comment": {
+    "kind": "draft_reply",
+    "id": "cmwjr6b390009nk1su7l6iizr",
+    "authorName": "Rudo Moyo",
+    "text": "We hit exactly this last quarter. The model looked fine in testing, then a source system changed a date format and nobody noticed for three weeks. How do you get business teams to own the data checks instead of IT?",
+    "post": {
+     "title": "A passing eval score is not a release decision",
+     "text": "A passing eval score is not a release decision.\n\nAutomated AI evaluations are useful. I use them. They can run large sets of test prompts, compare outputs against expected answers and flag drift between model versions far faster than any person could.\n\nBut they only measure what someone thought to test.\n\nSay a model scores well on a test set built from last year's support tickets. The suite passes. Nobody asked whether this year's customers ask different questions, or whether the \"correct\" answers in that test set were ever reviewed. The score is real. The confidence it gives you might not be.\n\nThat's why I think a named person should own the go/no-go call. Not a dashboard. A person who reads a sample of the outputs, looks at what failed and what wasn't tested, and signs off knowing they'll be asked about it later.\n\nIn my own AI workflow projects, I follow a simple rule: the AI drafts, a human approves. The automation does the heavy lifting. The decision stays with someone who can explain it.\n\nIt's the same lesson I learned in QA. Green test runs tell you the tests passed. They don't tell you the product is ready.\n\nWho signs off on AI releases in your team, and what do they check beyond the eval score?\n\n#AIAssurance #ResponsibleAI #AIGovernance #QualityEngineering",
+     "excerpt": ""
+    }
+   },
+   "response": {
+    "model": "claude-opus-5-5",
+    "id": "msg_011Ch7Hfc3etV3h8u9v7yz41",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+     {
+      "type": "text",
+      "text": "{\"should_reply\":true,\"should_like\":true,\"reply\":\"Rudo, that date format one is painful because nothing fails loudly. What's helped me is making the business team write down what \\\"looks wrong\\\" means to them, then turning that into a check they can read and own. IT runs it, but the thresholds and sign-off sit with the people who'd notice the bad output first.\",\"note\":\"\"}"
+     }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+     "input_tokens": 1286,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "output_tokens": 122,
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "service_tier": "standard",
+     "inference_geo": "global",
+     "speed": "standard"
+    },
+    "diagnostics": null
+   }
+  },
+  {
+   "request": {
+    "id": "cmwjr6b3b000bnk1syjqua922"
+   },
+   "comment": {
+    "kind": "draft_reply",
+    "id": "cmwjr6b3b000bnk1syjqua922",
+    "authorName": "Daniel Okafor",
+    "text": "Useful framing. I'd add that lineage is usually the first thing to go when teams are under delivery pressure.",
+    "post": {
+     "title": "A passing eval score is not a release decision",
+     "text": "A passing eval score is not a release decision.\n\nAutomated AI evaluations are useful. I use them. They can run large sets of test prompts, compare outputs against expected answers and flag drift between model versions far faster than any person could.\n\nBut they only measure what someone thought to test.\n\nSay a model scores well on a test set built from last year's support tickets. The suite passes. Nobody asked whether this year's customers ask different questions, or whether the \"correct\" answers in that test set were ever reviewed. The score is real. The confidence it gives you might not be.\n\nThat's why I think a named person should own the go/no-go call. Not a dashboard. A person who reads a sample of the outputs, looks at what failed and what wasn't tested, and signs off knowing they'll be asked about it later.\n\nIn my own AI workflow projects, I follow a simple rule: the AI drafts, a human approves. The automation does the heavy lifting. The decision stays with someone who can explain it.\n\nIt's the same lesson I learned in QA. Green test runs tell you the tests passed. They don't tell you the product is ready.\n\nWho signs off on AI releases in your team, and what do they check beyond the eval score?\n\n#AIAssurance #ResponsibleAI #AIGovernance #QualityEngineering",
+     "excerpt": ""
+    }
+   },
+   "response": {
+    "model": "claude-opus-5-5",
+    "id": "msg_011Ch7HfbzC8tN5SaUBSGuKi",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+     {
+      "type": "text",
+      "text": "{\"should_reply\":true,\"should_like\":true,\"reply\":\"True, Daniel. And once lineage goes, nobody can say where the \\\"expected\\\" answers came from, so the eval score loses its meaning too. Do you have a lightweight way of keeping it when deadlines bite?\",\"note\":\"\"}"
+     }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+     "input_tokens": 1258,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "output_tokens": 97,
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "service_tier": "standard",
+     "inference_geo": "global",
+     "speed": "standard"
+    },
+    "diagnostics": null
+   }
+  },
+  {
+   "request": {
+    "id": "cmwjr6b3d000dnk1suvhf8y8s"
+   },
+   "comment": {
+    "kind": "draft_reply",
+    "id": "cmwjr6b3d000dnk1suvhf8y8s",
+    "authorName": "Growth Hacks",
+    "text": "Great post!! I help professionals get 10x more followers in 30 days. DM me 'GROW' for my free guide.",
+    "post": {
+     "title": "A passing eval score is not a release decision",
+     "text": "A passing eval score is not a release decision.\n\nAutomated AI evaluations are useful. I use them. They can run large sets of test prompts, compare outputs against expected answers and flag drift between model versions far faster than any person could.\n\nBut they only measure what someone thought to test.\n\nSay a model scores well on a test set built from last year's support tickets. The suite passes. Nobody asked whether this year's customers ask different questions, or whether the \"correct\" answers in that test set were ever reviewed. The score is real. The confidence it gives you might not be.\n\nThat's why I think a named person should own the go/no-go call. Not a dashboard. A person who reads a sample of the outputs, looks at what failed and what wasn't tested, and signs off knowing they'll be asked about it later.\n\nIn my own AI workflow projects, I follow a simple rule: the AI drafts, a human approves. The automation does the heavy lifting. The decision stays with someone who can explain it.\n\nIt's the same lesson I learned in QA. Green test runs tell you the tests passed. They don't tell you the product is ready.\n\nWho signs off on AI releases in your team, and what do they check beyond the eval score?\n\n#AIAssurance #ResponsibleAI #AIGovernance #QualityEngineering",
+     "excerpt": ""
+    }
+   },
+   "response": {
+    "model": "claude-opus-5-5",
+    "id": "msg_011Ch7Hfc1fzMQj2Ppsn9RGJ",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+     {
+      "type": "text",
+      "text": "{\"should_reply\":false,\"should_like\":false,\"reply\":\"\",\"note\":\"Spam: unrelated follower-growth self-promotion asking people to DM them.\"}"
+     }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+     "input_tokens": 1260,
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 0
+     },
+     "output_tokens": 54,
+     "output_tokens_details": {
+      "thinking_tokens": 0
+     },
+     "service_tier": "standard",
+     "inference_geo": "global",
+     "speed": "standard"
+    },
+    "diagnostics": null
+   }
+  }
+ ],
+ "comments": {
+  "who": {
+   "sub": "mockAuthor01",
+   "name": "Mock Author",
+   "given_name": "Mock",
+   "family_name": "Author"
+  },
+  "responses": [
+   {
+    "elements": [
+     {
+      "id": "7300000000000000004",
+      "commentUrn": "urn:li:comment:(urn:li:share:7300000000000000003,7300000000000000004)",
+      "object": "urn:li:share:7300000000000000003",
+      "actor": "urn:li:person:p1",
+      "message": {
+       "text": "We hit exactly this last quarter. The model looked fine in testing, then a source system changed a date format and nobody noticed for three weeks. How do you get business teams to own the data checks instead of IT?"
+      },
+      "created": {
+       "time": 1794863112563
+      },
+      "actor~": {
+       "localizedFirstName": "Rudo",
+       "localizedLastName": "Moyo"
+      }
+     },
+     {
+      "id": "7300000000000000005",
+      "commentUrn": "urn:li:comment:(urn:li:share:7300000000000000003,7300000000000000005)",
+      "object": "urn:li:share:7300000000000000003",
+      "actor": "urn:li:person:p2",
+      "message": {
+       "text": "Useful framing. I'd add that lineage is usually the first thing to go when teams are under delivery pressure."
+      },
+      "created": {
+       "time": 1794863112563
+      },
+      "actor~": {
+       "localizedFirstName": "Daniel",
+       "localizedLastName": "Okafor"
+      }
+     },
+     {
+      "id": "7300000000000000006",
+      "commentUrn": "urn:li:comment:(urn:li:share:7300000000000000003,7300000000000000006)",
+      "object": "urn:li:share:7300000000000000003",
+      "actor": "urn:li:person:p3",
+      "message": {
+       "text": "Great post!! I help professionals get 10x more followers in 30 days. DM me 'GROW' for my free guide."
+      },
+      "created": {
+       "time": 1794863112563
+      },
+      "actor~": {
+       "localizedFirstName": "Growth",
+       "localizedLastName": "Hacks"
+      }
+     },
+     {
+      "id": "7300000000000000007",
+      "commentUrn": "urn:li:comment:(urn:li:share:7300000000000000003,7300000000000000007)",
+      "object": "urn:li:share:7300000000000000003",
+      "actor": "urn:li:person:mockAuthor01",
+      "message": {
+       "text": "Thanks all for reading. I'll reply to comments today."
+      },
+      "created": {
+       "time": 1794863112563
+      },
+      "actor~": {
+       "localizedFirstName": "Mock",
+       "localizedLastName": "Author"
+      }
+     }
+    ],
+    "paging": {
+     "count": 4,
+     "start": 0
+    }
+   },
+   {
+    "elements": [
+     {
+      "id": "7300000000000000009",
+      "commentUrn": "urn:li:comment:(urn:li:share:7300000000000000008,7300000000000000009)",
+      "object": "urn:li:share:7300000000000000008",
+      "actor": "urn:li:person:p1",
+      "message": {
+       "text": "We hit exactly this last quarter. The model looked fine in testing, then a source system changed a date format and nobody noticed for three weeks. How do you get business teams to own the data checks instead of IT?"
+      },
+      "created": {
+       "time": 1794863112568
+      },
+      "actor~": {
+       "localizedFirstName": "Rudo",
+       "localizedLastName": "Moyo"
+      }
+     },
+     {
+      "id": "7300000000000000010",
+      "commentUrn": "urn:li:comment:(urn:li:share:7300000000000000008,7300000000000000010)",
+      "object": "urn:li:share:7300000000000000008",
+      "actor": "urn:li:person:p2",
+      "message": {
+       "text": "Useful framing. I'd add that lineage is usually the first thing to go when teams are under delivery pressure."
+      },
+      "created": {
+       "time": 1794863112568
+      },
+      "actor~": {
+       "localizedFirstName": "Daniel",
+       "localizedLastName": "Okafor"
+      }
+     },
+     {
+      "id": "7300000000000000011",
+      "commentUrn": "urn:li:comment:(urn:li:share:7300000000000000008,7300000000000000011)",
+      "object": "urn:li:share:7300000000000000008",
+      "actor": "urn:li:person:p3",
+      "message": {
+       "text": "Great post!! I help professionals get 10x more followers in 30 days. DM me 'GROW' for my free guide."
+      },
+      "created": {
+       "time": 1794863112568
+      },
+      "actor~": {
+       "localizedFirstName": "Growth",
+       "localizedLastName": "Hacks"
+      }
+     },
+     {
+      "id": "7300000000000000012",
+      "commentUrn": "urn:li:comment:(urn:li:share:7300000000000000008,7300000000000000012)",
+      "object": "urn:li:share:7300000000000000008",
+      "actor": "urn:li:person:mockAuthor01",
+      "message": {
+       "text": "Thanks all for reading. I'll reply to comments today."
+      },
+      "created": {
+       "time": 1794863112568
+      },
+      "actor~": {
+       "localizedFirstName": "Mock",
+       "localizedLastName": "Author"
+      }
+     }
+    ],
+    "paging": {
+     "count": 4,
+     "start": 0
+    }
+   }
+  ]
+ }
+}
