@@ -47,9 +47,14 @@ ai-workflow-automation/
 
 See [docs/CONVENTIONS.md](docs/CONVENTIONS.md) for the details.
 
+## More work
+
+- [QA Test Automation](https://github.com/Travoltah/qa-test-automation): Selenium, Postman and test planning
+- [Data Science Projects](https://github.com/Travoltah/data-science-projects): machine learning, NLP and BI dashboards
+
 ## Contact
 
-- Portfolio: *add your website URL here*
+- Portfolio: [trevor-kauyu.vercel.app](https://trevor-kauyu.vercel.app)
 - LinkedIn: [linkedin.com/in/trevor-kauyu](https://www.linkedin.com/in/trevor-kauyu/)
 
 ## License
