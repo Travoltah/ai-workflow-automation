@@ -1,0 +1,95 @@
+{
+ "source": "Live evaluation run, application EVAL-C01 (specimen passport photo + specimen electricity bill), 2026-11-16. Page images removed; digital text and Claude responses kept.",
+ "settings": {
+  "model": "claude-opus-5-5"
+ },
+ "inputs": [
+  {
+   "document_id": 1,
+   "filename": "electricity_bill.pdf",
+   "declared_type": "proof_of_address",
+   "text": "Contoso Power (fictional)\nSPECIMEN\nElectricity bill\nBill date: 27 Oct 2026\nAccount number: CP-10021\nCustomer\nTariro Grace Mapfumo\n10 Jacaranda Avenue, Borrowdale, Utopia City UC11\nSupply period: 26 Sep 2026 to 26 Oct 2026\nUnits used: 412 kWh\nAmount due: UTD 58.40\nPay by: 17 Nov 2026\nThis is a fictional specimen document generated for software testing.",
+   "pages": 1
+  },
+  {
+   "document_id": 2,
+   "filename": "passport.jpg",
+   "declared_type": "identity",
+   "text": "",
+   "pages": 1
+  }
+ ],
+ "responses": [
+  {
+   "model": "claude-opus-5-5",
+   "id": "msg_011Ch77tGqTJQVjBshRGbYeP",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "{\"doc_type\":\"utility_bill\",\"readability\":\"clear\",\"fields\":{\"full_name\":{\"value\":\"Tariro Grace Mapfumo\",\"as_printed\":\"Tariro Grace Mapfumo\",\"confidence\":\"high\"},\"surname\":{\"value\":\"Mapfumo\",\"as_printed\":\"Mapfumo\",\"confidence\":\"medium\"},\"given_names\":{\"value\":\"Tariro Grace\",\"as_printed\":\"Tariro Grace\",\"confidence\":\"medium\"},\"date_of_birth\":{\"value\":\"\",\"as_printed\":\"\",\"confidence\":\"high\"},\"document_number\":{\"value\":\"CP-10021\",\"as_printed\":\"CP-10021\",\"confidence\":\"high\"},\"issuing_country\":{\"value\":\"\",\"as_printed\":\"\",\"confidence\":\"high\"},\"nationality\":{\"value\":\"\",\"as_printed\":\"\",\"confidence\":\"high\"},\"sex\":{\"value\":\"\",\"as_printed\":\"\",\"confidence\":\"high\"},\"issue_date\":{\"value\":\"\",\"as_printed\":\"\",\"confidence\":\"high\"},\"expiry_date\":{\"value\":\"\",\"as_printed\":\"\",\"confidence\":\"high\"},\"address\":{\"value\":\"10 Jacaranda Avenue, Borrowdale, Utopia City UC11\",\"as_printed\":\"10 Jacaranda Avenue, Borrowdale, Utopia City UC11\",\"confidence\":\"high\"},\"document_date\":{\"value\":\"2026-10-27\",\"as_printed\":\"27 Oct 2026\",\"confidence\":\"high\"},\"issuer\":{\"value\":\"Contoso Power (fictional)\",\"as_printed\":\"Contoso Power (fictional)\",\"confidence\":\"high\"},\"mrz_line1\":{\"value\":\"\",\"as_printed\":\"\",\"confidence\":\"high\"},\"mrz_line2\":{\"value\":\"\",\"as_printed\":\"\",\"confidence\":\"high\"}},\"notes\":\"Fictional SPECIMEN electricity bill. Document number is the account number. Surname/given-name split inferred from name order on the bill. Supply period 26 Sep 2026 to 26 Oct 2026; amount due UTD 58.40, pay by 17 Nov 2026.\"}"
+    }
+   ],
+   "container": null,
+   "stop_reason": "end_turn",
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 5810,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "output_tokens": 683,
+    "output_tokens_details": {
+     "thinking_tokens": 0
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "diagnostics": null
+  },
+  {
+   "model": "claude-opus-5-5",
+   "id": "msg_011Ch77tGsgyKVxP2oV9ZZ4S",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQS2gcKEAgTGAI4AUIIdGhpbmtpbmcSDIwNyptfngqcYQJ0FhoMfE61Hfk1hGihe2WvIjDOWquh52HYaTdBrGaU7ooJ+SxqQdW308AwYB6NbuS/dQdskGUHYtVUIl3oWW7jRPwq9wZKgBZDBsGIR3nlSkb7XEDn45xHuQekCJgaHWJ5x/T1swDviPoKtW8Nve0Qi1n0BgNO++hd869aW4FeME3shXfX4+ln23ZorHhX9IT6fkgMddgqPs4JUEurC7uPQIgY0l9M5JSX7RIbRKqcSreRlIw+J0CDQe8w9jNuQUyJESi+UmldzajrTw0mo/69Tf0hvqKsIcPY7CpUPbkWOmtwdV/hhzy1isLEoBLKa5zAdln5rFqA+96yZX1O6HOFWwNv0lA9C1n5VoCWLeQA45SlIU85K88F1IzTwxecLb8JnmxLeFIwZjcyXfXU0HdffbJB5B6Z+TOmq4mrId2tyhJBc6Nh6GnJE5/cUfWda4quJgLpRGB1cbZ89WEGYWaiPQKc8jxs/eDf9zmDZpJUumSvm8O/zn3Kx1PhHlhmwy9MiW4yTplAkZEZ6S0mxK/9fCkfhwSiomYB82xaCi5Jxa4Qis3hSAeGhPvS0A/jjS6HBbHMAZlFN+v+EUpJ2sV4wfvsrCq1UTPLoyqPuaEK1D2cfEhObtXdia25IlQt2VyabH9ZlqW0cGcLvxvte9U0jDJmKmBGwmgAsYaQVJB7R3RvPw1DNbub1dqaA8IaQIOQNFbYamVrg3bG46Jax/+IW/Ubrew3BAVSSRkL8lZuxPrkR+A8O8KkriFojQN3DDZc2fCBK9Ar4ESwLUor21mBGJZzYvgIw76YABGdW0ANJ03zctCCnZyZNXIhmzqVJ+PNg7KzRDGwIFqUWSNIRnTSEpM4AyGKK+DiP7yaqEV6Quxp2l+A3YGBWLPcLsOj3wGjVv9EHdCdnFB9cBha0PWFHPubWimjEEuLdkh8Wb0RBcPYP/8/77JthWlvCUb+InsIB1+dc0+5Shm0LvFL8lNTyEtehsfD1udODlrzogPHWPyhB97gU7pdqIpO0PsBWRp9z7Y+Mdpv/FeIhstac62TPftD7LYt+csuvlr/X8qSlmjGgibPyKSyvz3UxsptzYsqMnXRlTsqY/ijOS0gXfPQotZaab0HhIaWMeLwZUBbixkBTpBY1DdEik1BNjcMU+ueKn6e1FyIs8fsNXOH5hTjStlWYT5X1UwtJ5PII5wa+PPJfRncJyEDfiEh6NwrJjMKw9xFa51ONzNiyAP6mIoMjwVq0y9MD1VUiUu5HS5rBx5iIRPOyALn0q5c4RgB"
+    },
+    {
+     "type": "text",
+     "text": "{\"doc_type\":\"passport\",\"readability\":\"clear\",\"fields\":{\"full_name\":{\"value\":\"TARIRO GRACE MAPFUMO\",\"as_printed\":\"MAPFUMO TARIRO GRACE\",\"confidence\":\"high\"},\"surname\":{\"value\":\"MAPFUMO\",\"as_printed\":\"MAPFUMO\",\"confidence\":\"high\"},\"given_names\":{\"value\":\"TARIRO GRACE\",\"as_printed\":\"TARIRO GRACE\",\"confidence\":\"high\"},\"date_of_birth\":{\"value\":\"1992-03-15\",\"as_printed\":\"15 MAR 1992\",\"confidence\":\"high\"},\"document_number\":{\"value\":\"UA4821937\",\"as_printed\":\"UA4821937\",\"confidence\":\"high\"},\"issuing_country\":{\"value\":\"UTO\",\"as_printed\":\"UTO\",\"confidence\":\"high\"},\"nationality\":{\"value\":\"UTOPIAN\",\"as_printed\":\"UTOPIAN\",\"confidence\":\"high\"},\"sex\":{\"value\":\"F\",\"as_printed\":\"F\",\"confidence\":\"high\"},\"issue_date\":{\"value\":\"2024-05-30\",\"as_printed\":\"30 MAY 2024\",\"confidence\":\"high\"},\"expiry_date\":{\"value\":\"2030-11-15\",\"as_printed\":\"15 NOV 2030\",\"confidence\":\"high\"},\"address\":{\"value\":\"\",\"as_printed\":\"\",\"confidence\":\"high\"},\"document_date\":{\"value\":\"\",\"as_printed\":\"\",\"confidence\":\"high\"},\"issuer\":{\"value\":\"UTOPIA PASSPORT OFFICE\",\"as_printed\":\"UTOPIA PASSPORT OFFICE\",\"confidence\":\"high\"},\"mrz_line1\":{\"value\":\"P<UTOMAPFUMO<<TARIRO<GRACE<<<<<<<<<<<<<<<<<<\",\"as_printed\":\"P<UTOMAPFUMO<<TARIRO<GRACE<<<<<<<<<<<<<<<<<<\",\"confidence\":\"medium\"},\"mrz_line2\":{\"value\":\"UA48219376UTO9203158F3011157<<<<<<<<<<<<<<02\",\"as_printed\":\"UA48219376UTO9203158F3011157<<<<<<<<<<<<<<02\",\"confidence\":\"medium\"}},\"notes\":\"Training specimen passport marked SPECIMEN (fictional country Utopia). Visual zone data is consistent with the MRZ. Filler '<' counts in the MRZ were read from the image and may warrant verification.\"}"
+    }
+   ],
+   "container": null,
+   "stop_reason": "end_turn",
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 5424,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 0
+    },
+    "output_tokens": 1063,
+    "output_tokens_details": {
+     "thinking_tokens": 244
+    },
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "diagnostics": null
+  }
+ ]
+}

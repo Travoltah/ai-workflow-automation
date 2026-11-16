@@ -1,0 +1,436 @@
+{
+  "generated": "2026-11-16",
+  "note": "Fictional specimens. Utopia (UTO) is the ICAO Doc 9303 specimen state.",
+  "cases": [
+    {
+      "case": "C01",
+      "title": "Clean application: passport photo and an electricity bill",
+      "applicant": {
+        "full_name": "Tariro Grace Mapfumo",
+        "date_of_birth": "1992-03-15",
+        "address": "10 Jacaranda Avenue, Borrowdale, Utopia City UC11"
+      },
+      "files": [
+        {
+          "file": "passport.jpg",
+          "declared_type": "identity",
+          "truth": {
+            "doc_type": "passport",
+            "full_name": "Tariro Grace Mapfumo",
+            "date_of_birth": "1992-03-15",
+            "document_number": "UA4821937",
+            "expiry_date": "2030-11-15"
+          }
+        },
+        {
+          "file": "electricity_bill.pdf",
+          "declared_type": "proof_of_address",
+          "truth": {
+            "doc_type": "utility_bill",
+            "full_name": "Tariro Grace Mapfumo",
+            "document_date": "2026-10-27"
+          }
+        }
+      ],
+      "expect": {
+        "status": "ready_for_review",
+        "fail": [],
+        "doc_status": {
+          "passport.jpg": "ok",
+          "electricity_bill.pdf": "ok"
+        }
+      }
+    },
+    {
+      "case": "C02",
+      "title": "A phone photo saved sideways (EXIF rotation) and a scanned statement with no text layer",
+      "applicant": {
+        "full_name": "Kudakwashe Ndlovu",
+        "date_of_birth": "1985-07-02",
+        "address": "17 Jacaranda Avenue, Borrowdale, Utopia City UC12"
+      },
+      "files": [
+        {
+          "file": "national_id_photo.jpg",
+          "declared_type": "identity",
+          "truth": {
+            "doc_type": "national_id",
+            "full_name": "Kudakwashe Ndlovu",
+            "date_of_birth": "1985-07-02",
+            "document_number": "63-482193K-42",
+            "expiry_date": "2030-11-15"
+          }
+        },
+        {
+          "file": "bank_statement_scan.pdf",
+          "declared_type": "proof_of_address",
+          "truth": {
+            "doc_type": "bank_statement",
+            "full_name": "Kudakwashe Ndlovu",
+            "document_date": "2026-10-27"
+          }
+        }
+      ],
+      "expect": {
+        "status": "ready_for_review",
+        "fail": [],
+        "doc_status": {
+          "national_id_photo.jpg": "ok",
+          "bank_statement_scan.pdf": "ok"
+        }
+      }
+    },
+    {
+      "case": "C03",
+      "title": "A blurred photo of an ID: stopped before any AI call",
+      "applicant": {
+        "full_name": "Farai Chinamasa",
+        "date_of_birth": "1997-11-30",
+        "address": "24 Jacaranda Avenue, Borrowdale, Utopia City UC13"
+      },
+      "files": [
+        {
+          "file": "national_id_blurred.jpg",
+          "declared_type": "identity"
+        }
+      ],
+      "expect": {
+        "status": "action_required",
+        "fail": [
+          "FILE_POOR_QUALITY"
+        ],
+        "doc_status": {
+          "national_id_blurred.jpg": "poor_quality"
+        },
+        "ai_calls": 0
+      }
+    },
+    {
+      "case": "C04",
+      "title": "An expired passport",
+      "applicant": {
+        "full_name": "Nyasha Mutasa",
+        "date_of_birth": "1974-01-09",
+        "address": "31 Jacaranda Avenue, Borrowdale, Utopia City UC14"
+      },
+      "files": [
+        {
+          "file": "passport.jpg",
+          "declared_type": "identity",
+          "truth": {
+            "doc_type": "passport",
+            "full_name": "Nyasha Mutasa",
+            "date_of_birth": "1974-01-09",
+            "document_number": "UB7730415",
+            "expiry_date": "2026-10-07"
+          }
+        }
+      ],
+      "expect": {
+        "status": "action_required",
+        "fail": [
+          "ID_EXPIRED",
+          "MISSING_PROOF_OF_ADDRESS"
+        ],
+        "doc_status": {
+          "passport.jpg": "ok"
+        }
+      }
+    },
+    {
+      "case": "C05",
+      "title": "A passport whose MRZ date of birth was edited without fixing its check digit",
+      "applicant": {
+        "full_name": "Tendai Moyo",
+        "date_of_birth": "1988-05-21",
+        "address": "38 Jacaranda Avenue, Borrowdale, Utopia City UC15"
+      },
+      "files": [
+        {
+          "file": "passport.jpg",
+          "declared_type": "identity",
+          "truth": {
+            "doc_type": "passport",
+            "full_name": "Tendai Moyo",
+            "date_of_birth": "1988-05-21",
+            "document_number": "UC2209876",
+            "expiry_date": "2030-11-15"
+          }
+        }
+      ],
+      "expect": {
+        "status": "action_required",
+        "fail": [
+          "MRZ_CHECK_DIGITS",
+          "MISSING_PROOF_OF_ADDRESS"
+        ],
+        "doc_status": {
+          "passport.jpg": "ok"
+        }
+      }
+    },
+    {
+      "case": "C06",
+      "title": "A utility bill in someone else's name",
+      "applicant": {
+        "full_name": "Rutendo Banda",
+        "date_of_birth": "1999-09-14",
+        "address": "45 Jacaranda Avenue, Borrowdale, Utopia City UC16"
+      },
+      "files": [
+        {
+          "file": "national_id.jpg",
+          "declared_type": "identity",
+          "truth": {
+            "doc_type": "national_id",
+            "full_name": "Rutendo Banda",
+            "date_of_birth": "1999-09-14",
+            "document_number": "42-305518R-42",
+            "expiry_date": "2030-11-15"
+          }
+        },
+        {
+          "file": "electricity_bill.pdf",
+          "declared_type": "proof_of_address",
+          "truth": {
+            "doc_type": "utility_bill",
+            "full_name": "Chipo Marufu",
+            "document_date": "2026-10-27"
+          }
+        }
+      ],
+      "expect": {
+        "status": "ready_for_review",
+        "fail": [
+          "NAME_MATCHES_APPLICATION"
+        ],
+        "doc_status": {
+          "national_id.jpg": "ok",
+          "electricity_bill.pdf": "ok"
+        }
+      }
+    },
+    {
+      "case": "C07",
+      "title": "A password-protected bank statement: wrong password, then the right one",
+      "applicant": {
+        "full_name": "Simbarashe Gumbo",
+        "date_of_birth": "1981-12-03",
+        "address": "52 Jacaranda Avenue, Borrowdale, Utopia City UC17"
+      },
+      "files": [
+        {
+          "file": "national_id.jpg",
+          "declared_type": "identity",
+          "truth": {
+            "doc_type": "national_id",
+            "full_name": "Simbarashe Gumbo",
+            "date_of_birth": "1981-12-03",
+            "document_number": "15-660284S-15",
+            "expiry_date": "2030-11-15"
+          }
+        },
+        {
+          "file": "bank_statement_protected.pdf",
+          "declared_type": "proof_of_address",
+          "password": "Gumbo-1203",
+          "truth": {
+            "doc_type": "bank_statement",
+            "full_name": "Simbarashe Gumbo",
+            "document_date": "2026-10-27"
+          }
+        }
+      ],
+      "expect": {
+        "status": "action_required",
+        "fail": [
+          "FILE_NEEDS_PASSWORD"
+        ],
+        "doc_status": {
+          "national_id.jpg": "ok",
+          "bank_statement_protected.pdf": "needs_password"
+        },
+        "after_unlock": {
+          "status": "ready_for_review",
+          "fail": []
+        }
+      }
+    },
+    {
+      "case": "C08",
+      "title": "An iPhone HEIC photo of a passport and a five-month-old bill",
+      "applicant": {
+        "full_name": "Vimbai Chari",
+        "date_of_birth": "1995-06-18",
+        "address": "59 Jacaranda Avenue, Borrowdale, Utopia City UC18"
+      },
+      "files": [
+        {
+          "file": "IMG_4417.HEIC",
+          "declared_type": "identity",
+          "truth": {
+            "doc_type": "passport",
+            "full_name": "Vimbai Chari",
+            "date_of_birth": "1995-06-18",
+            "document_number": "UD5518230",
+            "expiry_date": "2030-11-15"
+          }
+        },
+        {
+          "file": "electricity_bill.pdf",
+          "declared_type": "proof_of_address",
+          "truth": {
+            "doc_type": "utility_bill",
+            "full_name": "Vimbai Chari",
+            "document_date": "2026-06-19"
+          }
+        }
+      ],
+      "expect": {
+        "status": "action_required",
+        "fail": [
+          "POA_RECENT"
+        ],
+        "doc_status": {
+          "IMG_4417.HEIC": "ok",
+          "electricity_bill.pdf": "ok"
+        }
+      }
+    },
+    {
+      "case": "C09",
+      "title": "A caf\u00e9 receipt uploaded as proof of address",
+      "applicant": {
+        "full_name": "Tawanda Shumba",
+        "date_of_birth": "1990-02-27",
+        "address": "66 Jacaranda Avenue, Borrowdale, Utopia City UC19"
+      },
+      "files": [
+        {
+          "file": "national_id.jpg",
+          "declared_type": "identity",
+          "truth": {
+            "doc_type": "national_id",
+            "full_name": "Tawanda Shumba",
+            "date_of_birth": "1990-02-27",
+            "document_number": "27-918374T-27",
+            "expiry_date": "2030-11-15"
+          }
+        },
+        {
+          "file": "proof_of_address.jpg",
+          "declared_type": "proof_of_address",
+          "truth": {
+            "doc_type": "other"
+          }
+        }
+      ],
+      "expect": {
+        "status": "action_required",
+        "fail": [
+          "WRONG_DOCUMENT",
+          "MISSING_PROOF_OF_ADDRESS"
+        ],
+        "doc_status": {
+          "national_id.jpg": "ok",
+          "proof_of_address.jpg": "ok"
+        }
+      }
+    },
+    {
+      "case": "C10",
+      "title": "A text file renamed to .pdf, and a macro-enabled Word file: both stopped before any AI call",
+      "applicant": {
+        "full_name": "Precious Makoni",
+        "date_of_birth": "1993-08-08",
+        "address": "73 Jacaranda Avenue, Borrowdale, Utopia City UC20"
+      },
+      "files": [
+        {
+          "file": "national_id.pdf",
+          "declared_type": "identity"
+        },
+        {
+          "file": "utility_bill.docm",
+          "declared_type": "proof_of_address"
+        }
+      ],
+      "expect": {
+        "status": "action_required",
+        "fail": [
+          "FILE_UNSUPPORTED_TYPE",
+          "FILE_REJECTED_MACRO"
+        ],
+        "doc_status": {
+          "national_id.pdf": "unsupported_type",
+          "utility_bill.docm": "rejected_macro"
+        },
+        "ai_calls": 0
+      }
+    },
+    {
+      "case": "C11",
+      "title": "An applicant under 18",
+      "applicant": {
+        "full_name": "Blessing Musoni",
+        "date_of_birth": "2010-04-04",
+        "address": "80 Jacaranda Avenue, Borrowdale, Utopia City UC21"
+      },
+      "files": [
+        {
+          "file": "national_id.jpg",
+          "declared_type": "identity",
+          "truth": {
+            "doc_type": "national_id",
+            "full_name": "Blessing Musoni",
+            "date_of_birth": "2010-04-04",
+            "document_number": "44-551902B-44",
+            "expiry_date": "2030-11-15"
+          }
+        }
+      ],
+      "expect": {
+        "status": "action_required",
+        "fail": [
+          "MINIMUM_AGE",
+          "MISSING_PROOF_OF_ADDRESS"
+        ],
+        "doc_status": {
+          "national_id.jpg": "ok"
+        }
+      }
+    },
+    {
+      "case": "C12",
+      "title": "A statement saved with Photoshop after it was issued (a tamper signal for the reviewer)",
+      "applicant": {
+        "full_name": "Ruvimbo Zhou",
+        "date_of_birth": "1987-10-12",
+        "address": "87 Jacaranda Avenue, Borrowdale, Utopia City UC22"
+      },
+      "files": [
+        {
+          "file": "bank_statement.pdf",
+          "declared_type": "proof_of_address",
+          "truth": {
+            "doc_type": "bank_statement",
+            "full_name": "Ruvimbo Zhou",
+            "document_date": "2026-10-27"
+          }
+        }
+      ],
+      "expect": {
+        "status": "action_required",
+        "fail": [
+          "MISSING_IDENTITY"
+        ],
+        "warn": [
+          "PDF_EDIT_SIGNALS"
+        ],
+        "doc_status": {
+          "bank_statement.pdf": "ok"
+        }
+      }
+    }
+  ]
+}
