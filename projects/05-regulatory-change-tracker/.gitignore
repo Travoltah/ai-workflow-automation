@@ -1,0 +1,5 @@
+.env
+# Evaluation output, per run
+evaluation/results/
+__pycache__/
+.pytest_cache/

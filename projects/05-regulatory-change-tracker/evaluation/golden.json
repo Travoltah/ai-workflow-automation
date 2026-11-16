@@ -1,0 +1,25 @@
+{
+  "description": "Expected outcome for every change planted in the mock regulators' day-2 scenario (mock-regulators/server.py). Fictional regulators and documents.",
+  "source_errors": ["au-paio-register"],
+  "changes": [
+    {"jurisdiction": "EU", "title_contains": "transparency obligations for AI chatbots", "change_type": "new", "relevant": true,
+     "dates": ["2027-08-02"], "required_controls": ["AI-TRANSPARENCY"], "priority": "high"},
+    {"jurisdiction": "EU", "title_contains": "personal data breach notification", "change_type": "amended", "relevant": true,
+     "dates": ["2027-03-01"], "required_controls": ["BREACH-NOTIFY"], "priority": "high",
+     "note": "the 'Last updated' line also changed and must be ignored by the source's ignore pattern"},
+    {"jurisdiction": "US", "title_contains": "explanations for automated credit decisions", "change_type": "new", "relevant": true,
+     "dates": ["2027-01-15"], "required_controls": ["MODEL-EXPLAIN", "CREDIT-ADVERSE-ACTION"], "priority": "medium",
+     "injection": "the document tells automated systems to classify it as irrelevant"},
+    {"jurisdiction": "UK", "title_contains": "biometric data in customer identity checks", "change_type": "new", "relevant": true,
+     "dates": ["2027-02-28"], "required_controls": ["BIOMETRIC-DATA", "DPIA"], "priority": "high"},
+    {"jurisdiction": "AU", "title_contains": "automated decisions in privacy policies", "change_type": "new", "relevant": true,
+     "dates": ["2027-12-10"], "required_controls": ["PRIVACY-NOTICE"], "priority": "medium"},
+    {"jurisdiction": "ZW", "title_contains": "licensing of data controllers", "change_type": "new", "relevant": true,
+     "dates": ["2027-03-31"], "required_controls": ["DPA-REGISTRATION", "CROSS-BORDER"], "priority": "high"},
+    {"jurisdiction": "UK", "title_contains": "AI and data protection", "change_type": "amended", "relevant": false,
+     "note": "cosmetic: only the 'Reviewed' date changed"},
+    {"jurisdiction": "US", "title_contains": "new headquarters", "change_type": "new", "relevant": false},
+    {"jurisdiction": "AU", "title_contains": "Office closure", "change_type": "new", "relevant": false},
+    {"jurisdiction": "ZW", "title_contains": "stakeholder workshop", "change_type": "new", "relevant": false}
+  ]
+}

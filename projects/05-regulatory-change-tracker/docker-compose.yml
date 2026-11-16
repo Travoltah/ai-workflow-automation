@@ -1,0 +1,78 @@
+# Self-hosted stack for the regulatory change tracker:
+#   PostgreSQL (n8n storage + reg_tracker)  +  n8n  +  collector (fetches sources, detects changes, no AI)
+#   + mock regulators and mock Jira for demos and the evaluation:  docker compose --profile demo up -d --build
+# Start:  docker compose up -d --build      Stop:  docker compose stop      Wipe data:  docker compose down -v
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: reg-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d:ro    # creates reg_tracker, the schema and the reference data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d n8n"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:2.47.7
+    restart: unless-stopped
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_DATABASE: n8n
+      DB_POSTGRESDB_USER: ${POSTGRES_USER}
+      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      WEBHOOK_URL: http://localhost:${N8N_PORT:-5678}/
+      GENERIC_TIMEZONE: ${TIMEZONE:-Africa/Harare}
+      TZ: ${TIMEZONE:-Africa/Harare}
+      N8N_DIAGNOSTICS_ENABLED: "false"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  collector:
+    build: ./service
+    container_name: reg-collector
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/reg_tracker
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # No published port: only n8n calls it, inside the Docker network.
+
+  mock-regulators:
+    profiles: ["demo"]
+    image: python:3.12-slim
+    container_name: mock-regulators
+    command: ["python", "-u", "/app/server.py", "--port", "8090"]
+    volumes:
+      - ./mock-regulators:/app:ro
+    ports:
+      - "8090:8090"                 # switch scenario: http://localhost:8090/_scenario?name=day2
+
+  mock-jira:
+    profiles: ["demo"]
+    image: python:3.12-slim
+    command: ["python", "-u", "/scripts/mock_jira.py", "--port", "8089"]
+    volumes:
+      - ./scripts:/scripts:ro
+    ports:
+      - "8089:8089"                 # http://localhost:8089/_state lists every task
+
+volumes:
+  postgres_data:
+  n8n_data:
