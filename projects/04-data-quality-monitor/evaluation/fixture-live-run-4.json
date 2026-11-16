@@ -1,0 +1,507 @@
+{
+ "source": "Live run #4 (n8n execution of DqMonitorFlow001), 2026-11-16. Fictional Contoso Pay data; personal data masked before sending.",
+ "settings": {
+  "model": "claude-opus-5-5"
+ },
+ "plan": {
+  "runId": 4,
+  "result": {
+   "errors": [],
+   "run_id": 4,
+   "actions": [
+    {
+     "owner": "Customer data team",
+     "action": "new",
+     "jira_key": null,
+     "severity": "high",
+     "check_sql": "SELECT lower(email), 'used by customers ' || string_agg(customer_id::text, ', ' ORDER BY customer_id)\n      FROM wallet.customers WHERE email IS NOT NULL AND btrim(email) <> ''\n     GROUP BY lower(email) HAVING count(*) > 1",
+     "dimension": "uniqueness",
+     "rule_code": "CUST_EMAIL_DUPLICATE",
+     "rule_name": "Two customers share one email",
+     "table_name": "wallet.customers",
+     "description": "An email identifies one customer. A shared email can send one customer's alerts to another.",
+     "incident_id": 17,
+     "sample_rows": [
+      {
+       "detail": "used by customers 1854, 2108",
+       "record_id": "tinashe.nyathi2108@example.com"
+      }
+     ],
+     "failing_count": 1
+    },
+    {
+     "owner": "Customer data team",
+     "action": "new",
+     "jira_key": null,
+     "severity": "medium",
+     "check_sql": "SELECT customer_id::text, 'email \"' || email || '\"'\n      FROM wallet.customers\n     WHERE email IS NOT NULL AND btrim(email) <> '' AND email !~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'",
+     "dimension": "validity",
+     "rule_code": "CUST_EMAIL_FORMAT",
+     "rule_name": "Customer email is not a valid address",
+     "table_name": "wallet.customers",
+     "description": "Emails must look like name@domain.tld, or messages bounce.",
+     "incident_id": 18,
+     "sample_rows": [
+      {
+       "detail": "email \"tendai.moyo@example\"",
+       "record_id": "1441"
+      },
+      {
+       "detail": "email \"rudo.ncube at example.com\"",
+       "record_id": "1964"
+      }
+     ],
+     "failing_count": 2
+    },
+    {
+     "owner": "Customer data team",
+     "action": "new",
+     "jira_key": null,
+     "severity": "medium",
+     "check_sql": "SELECT customer_id::text, 'customer ' || customer_id || ' has no email (value is ' ||\n           CASE WHEN email IS NULL THEN 'NULL' WHEN email = '' THEN 'an empty string' ELSE 'only spaces' END || ')'\n      FROM wallet.customers WHERE email IS NULL OR btrim(email) = ''",
+     "dimension": "completeness",
+     "rule_code": "CUST_EMAIL_MISSING",
+     "rule_name": "Customer email is missing",
+     "table_name": "wallet.customers",
+     "description": "Every customer needs an email address for receipts, password resets and security alerts.",
+     "incident_id": 19,
+     "sample_rows": [
+      {
+       "detail": "customer 1052 has no email (value is only spaces)",
+       "record_id": "1052"
+      },
+      {
+       "detail": "customer 1816 has no email (value is NULL)",
+       "record_id": "1816"
+      },
+      {
+       "detail": "customer 1850 has no email (value is an empty string)",
+       "record_id": "1850"
+      }
+     ],
+     "failing_count": 3
+    },
+    {
+     "owner": "Compliance",
+     "action": "new",
+     "jira_key": null,
+     "severity": "high",
+     "check_sql": "SELECT customer_id::text, 'kyc_status \"' || coalesce(kyc_status, 'NULL') || '\"'\n      FROM wallet.customers WHERE kyc_status IS NULL OR kyc_status NOT IN ('verified', 'pending', 'rejected')",
+     "dimension": "validity",
+     "rule_code": "CUST_KYC_STATUS",
+     "rule_name": "KYC status is not an allowed value",
+     "table_name": "wallet.customers",
+     "description": "KYC status must be verified, pending or rejected; anything else breaks transaction limits and reporting.",
+     "incident_id": 20,
+     "sample_rows": [
+      {
+       "detail": "kyc_status \"approved\"",
+       "record_id": "1266"
+      },
+      {
+       "detail": "kyc_status \"approved\"",
+       "record_id": "1391"
+      }
+     ],
+     "failing_count": 2
+    },
+    {
+     "owner": "Data engineering",
+     "action": "new",
+     "jira_key": null,
+     "severity": "high",
+     "check_sql": "SELECT feed_name, source_system || ' last loaded ' || round(extract(epoch FROM now() - last_loaded_at) / 3600, 1) ||\n           ' h ago; SLA ' || sla_hours || ' h'\n      FROM wallet.feed_loads WHERE last_loaded_at IS NULL OR last_loaded_at < now() - make_interval(hours => sla_hours)",
+     "dimension": "timeliness",
+     "rule_code": "FEED_FRESHNESS",
+     "rule_name": "Source feed is late",
+     "table_name": "wallet.feed_loads",
+     "description": "Each source feed must have loaded within its service level (sla_hours).",
+     "incident_id": 21,
+     "sample_rows": [
+      {
+       "detail": "Card processor last loaded 50.0 h ago; SLA 24 h",
+       "record_id": "card_settlements"
+      }
+     ],
+     "failing_count": 1
+    },
+    {
+     "owner": "Finance",
+     "action": "new",
+     "jira_key": null,
+     "severity": "critical",
+     "check_sql": "SELECT wallet_id || '@' || ledger_date, 'opening ' || opening_balance || ' + credits ' || total_credits ||\n           ' - debits ' || total_debits || ' = ' || (opening_balance + total_credits - total_debits) ||\n           ', but closing is ' || closing_balance\n      FROM wallet.daily_ledger WHERE closing_balance <> opening_balance + total_credits - total_debits",
+     "dimension": "consistency",
+     "rule_code": "LEDGER_ARITHMETIC",
+     "rule_name": "Ledger closing balance does not add up",
+     "table_name": "wallet.daily_ledger",
+     "description": "For every wallet and day: closing = opening + credits - debits.",
+     "incident_id": 22,
+     "sample_rows": [
+      {
+       "detail": "opening 1209.54 + credits 67.60 - debits 0.00 = 1277.14, but closing is 1289.64",
+       "record_id": "52146@2026-10-20"
+      }
+     ],
+     "failing_count": 1
+    },
+    {
+     "owner": "Finance",
+     "action": "new",
+     "jira_key": null,
+     "severity": "critical",
+     "check_sql": "WITH t AS (\n      SELECT wallet_id, created_at::date AS d,\n             sum(CASE WHEN txn_type IN ('deposit', 'p2p_receive') THEN amount ELSE 0 END) AS credits,\n             sum(CASE WHEN txn_type IN ('withdrawal', 'p2p_send') THEN amount + coalesce(fee, 0) ELSE 0 END) AS debits\n        FROM wallet.transactions WHERE status = 'completed' GROUP BY 1, 2)\n    SELECT coalesce(l.wallet_id, t.wallet_id) || '@' || coalesce(l.ledger_date, t.d),\n           'ledger credits/debits ' || coalesce(l.total_credits, 0) || '/' || coalesce(l.total_debits, 0) ||\n           ', transactions ' || coalesce(t.credits, 0) || '/' || coalesce(t.debits, 0)\n      FROM wallet.daily_ledger l FULL JOIN t ON t.wallet_id = l.wallet_id AND t.d = l.ledger_date\n     WHERE coalesce(l.total_credits, 0) <> coalesce(t.credits, 0) OR coalesce(l.total_debits, 0) <> coalesce(t.debits, 0)",
+     "dimension": "consistency",
+     "rule_code": "LEDGER_TXN_RECON",
+     "rule_name": "Ledger does not match the transactions",
+     "table_name": "wallet.daily_ledger",
+     "description": "Daily ledger credits and debits must equal the completed transactions for that wallet and day.",
+     "incident_id": 23,
+     "sample_rows": [
+      {
+       "detail": "ledger credits/debits 144.61/0.00, transactions 44.61/0",
+       "record_id": "52479@2026-10-28"
+      }
+     ],
+     "failing_count": 1
+    },
+    {
+     "owner": "Payments operations",
+     "action": "new",
+     "jira_key": null,
+     "severity": "high",
+     "check_sql": "SELECT txn_id::text, txn_type || ' of ' || amount FROM wallet.transactions WHERE amount <= 0 OR amount > 10000",
+     "dimension": "validity",
+     "rule_code": "TXN_AMOUNT_RANGE",
+     "rule_name": "Transaction amount out of range",
+     "table_name": "wallet.transactions",
+     "description": "Amounts must be above zero and at most 10,000.00 per transaction.",
+     "incident_id": 24,
+     "sample_rows": [
+      {
+       "detail": "deposit of 0.00",
+       "record_id": "9008569"
+      },
+      {
+       "detail": "deposit of -25.00",
+       "record_id": "9008570"
+      },
+      {
+       "detail": "deposit of 15000.00",
+       "record_id": "9008571"
+      }
+     ],
+     "failing_count": 3
+    },
+    {
+     "owner": "Payments operations",
+     "action": "new",
+     "jira_key": null,
+     "severity": "critical",
+     "check_sql": "SELECT external_ref, count(*) || ' transactions: ' || string_agg(txn_id::text, ', ' ORDER BY txn_id)\n      FROM wallet.transactions GROUP BY external_ref HAVING count(*) > 1",
+     "dimension": "uniqueness",
+     "rule_code": "TXN_DUPLICATE_REF",
+     "rule_name": "Payment reference used more than once",
+     "table_name": "wallet.transactions",
+     "description": "Each external reference from the payment switch must appear once; a repeat usually means a payment was posted twice.",
+     "incident_id": 25,
+     "sample_rows": [
+      {
+       "detail": "2 transactions: 9004238, 9008568",
+       "record_id": "CPS20261031000138"
+      },
+      {
+       "detail": "2 transactions: 9004692, 9008565",
+       "record_id": "CPS20261102000019"
+      },
+      {
+       "detail": "2 transactions: 9005162, 9008566",
+       "record_id": "CPS20261103000180"
+      },
+      {
+       "detail": "2 transactions: 9007789, 9008567",
+       "record_id": "CPS20261112000177"
+      }
+     ],
+     "failing_count": 4
+    },
+    {
+     "owner": "Payments operations",
+     "action": "new",
+     "jira_key": null,
+     "severity": "high",
+     "check_sql": "SELECT txn_id::text, 'created_at ' || created_at FROM wallet.transactions WHERE created_at > now() + interval '5 minutes'",
+     "dimension": "validity",
+     "rule_code": "TXN_FUTURE_DATE",
+     "rule_name": "Transaction dated in the future",
+     "table_name": "wallet.transactions",
+     "description": "A transaction can't happen after the moment it is loaded; future dates usually mean a time-zone or clock error.",
+     "incident_id": 26,
+     "sample_rows": [
+      {
+       "detail": "created_at 2026-11-18 13:42:00+00",
+       "record_id": "9008572"
+      },
+      {
+       "detail": "created_at 2026-11-18 15:42:00+00",
+       "record_id": "9008573"
+      }
+     ],
+     "failing_count": 2
+    },
+    {
+     "owner": "Payments operations",
+     "action": "new",
+     "jira_key": null,
+     "severity": "critical",
+     "check_sql": "SELECT t.txn_id::text, 'wallet_id ' || coalesce(t.wallet_id::text, 'NULL') || ' does not exist'\n      FROM wallet.transactions t LEFT JOIN wallet.wallets w ON w.wallet_id = t.wallet_id\n     WHERE w.wallet_id IS NULL",
+     "dimension": "integrity",
+     "rule_code": "TXN_ORPHAN_WALLET",
+     "rule_name": "Transaction on a wallet that does not exist",
+     "table_name": "wallet.transactions",
+     "description": "Every transaction must belong to an existing wallet.",
+     "incident_id": 27,
+     "sample_rows": [
+      {
+       "detail": "wallet_id 99901 does not exist",
+       "record_id": "9008574"
+      },
+      {
+       "detail": "wallet_id 99902 does not exist",
+       "record_id": "9008575"
+      }
+     ],
+     "failing_count": 2
+    },
+    {
+     "owner": "Data engineering",
+     "action": "new",
+     "jira_key": null,
+     "severity": "high",
+     "check_sql": "WITH latest AS (SELECT current_date - 1 AS d),\n    daily AS (\n      SELECT created_at::date AS d, count(*) AS n FROM wallet.transactions\n       WHERE created_at >= current_date - 8 AND created_at < current_date GROUP BY 1),\n    base AS (SELECT avg(coalesce(daily.n, 0)) AS avg_n\n               FROM latest, generate_series(latest.d - 7, latest.d - 1, interval '1 day') g(day)\n               LEFT JOIN daily ON daily.d = g.day::date)\n    SELECT latest.d::text, coalesce(daily.n, 0) || ' transactions vs a 7-day average of ' || round(base.avg_n)\n      FROM latest CROSS JOIN base LEFT JOIN daily ON daily.d = latest.d\n     WHERE coalesce(daily.n, 0) < 0.5 * base.avg_n",
+     "dimension": "volume",
+     "rule_code": "TXN_VOLUME_DROP",
+     "rule_name": "Daily transaction volume dropped sharply",
+     "table_name": "wallet.transactions",
+     "description": "Yesterday (the latest complete UTC day) should have at least half the average daily volume of the 7 days before it. A day with no transactions at all counts as 0.",
+     "incident_id": 28,
+     "sample_rows": [
+      {
+       "detail": "90 transactions vs a 7-day average of 293",
+       "record_id": "2026-11-15"
+      }
+     ],
+     "failing_count": 1
+    },
+    {
+     "owner": "Finance",
+     "action": "new",
+     "jira_key": null,
+     "severity": "high",
+     "check_sql": "SELECT txn_id::text, 'amount ' || amount || ', fee charged ' || fee || ', expected ' ||\n           round(least(greatest(amount * 0.015, 0.25), 15.00), 2)\n      FROM wallet.transactions\n     WHERE txn_type = 'withdrawal' AND amount > 0\n       AND fee IS DISTINCT FROM round(least(greatest(amount * 0.015, 0.25), 15.00), 2)",
+     "dimension": "consistency",
+     "rule_code": "TXN_WITHDRAWAL_FEE",
+     "rule_name": "Withdrawal fee does not follow the fee rule",
+     "table_name": "wallet.transactions",
+     "description": "Instant withdrawal fee = 1.5% of the amount, at least 0.25 and at most 15.00, rounded to the cent (FSD-2026-031 BR-03).",
+     "incident_id": 29,
+     "sample_rows": [
+      {
+       "detail": "amount 10.00, fee charged 0.15, expected 0.25",
+       "record_id": "9008576"
+      },
+      {
+       "detail": "amount 2000.00, fee charged 30.00, expected 15.00",
+       "record_id": "9008577"
+      },
+      {
+       "detail": "amount 33.33, fee charged 0.49, expected 0.50",
+       "record_id": "9008578"
+      }
+     ],
+     "failing_count": 3
+    },
+    {
+     "owner": "Core wallet team",
+     "action": "new",
+     "jira_key": null,
+     "severity": "medium",
+     "check_sql": "SELECT wallet_id::text, 'currency \"' || coalesce(currency, 'NULL') || '\"'\n      FROM wallet.wallets WHERE currency IS NULL OR currency NOT IN ('USD', 'ZWG', 'ZAR')",
+     "dimension": "validity",
+     "rule_code": "WALLET_CURRENCY",
+     "rule_name": "Wallet currency is not supported",
+     "table_name": "wallet.wallets",
+     "description": "Wallets hold USD, ZWG or ZAR, as ISO 4217 codes.",
+     "incident_id": 30,
+     "sample_rows": [
+      {
+       "detail": "currency \"US$\"",
+       "record_id": "51406"
+      }
+     ],
+     "failing_count": 1
+    },
+    {
+     "owner": "Finance",
+     "action": "new",
+     "jira_key": null,
+     "severity": "critical",
+     "check_sql": "SELECT wallet_id::text, 'balance ' || balance FROM wallet.wallets WHERE balance < 0",
+     "dimension": "validity",
+     "rule_code": "WALLET_NEGATIVE_BALANCE",
+     "rule_name": "Wallet balance is negative",
+     "table_name": "wallet.wallets",
+     "description": "Wallets have no overdraft, so a balance below zero means money left that the wallet didn't have.",
+     "incident_id": 31,
+     "sample_rows": [
+      {
+       "detail": "balance -310.00",
+       "record_id": "51923"
+      },
+      {
+       "detail": "balance -45.20",
+       "record_id": "52492"
+      }
+     ],
+     "failing_count": 2
+    },
+    {
+     "owner": "Core wallet team",
+     "action": "new",
+     "jira_key": null,
+     "severity": "critical",
+     "check_sql": "SELECT w.wallet_id::text, 'customer_id ' || coalesce(w.customer_id::text, 'NULL') || ' does not exist'\n      FROM wallet.wallets w LEFT JOIN wallet.customers c ON c.customer_id = w.customer_id\n     WHERE c.customer_id IS NULL",
+     "dimension": "integrity",
+     "rule_code": "WALLET_ORPHAN",
+     "rule_name": "Wallet belongs to no customer",
+     "table_name": "wallet.wallets",
+     "description": "Every wallet must belong to an existing customer; an orphan wallet can't be reconciled or reported to the regulator.",
+     "incident_id": 32,
+     "sample_rows": [
+      {
+       "detail": "customer_id 99001 does not exist",
+       "record_id": "59001"
+      },
+      {
+       "detail": "customer_id 99002 does not exist",
+       "record_id": "59002"
+      },
+      {
+       "detail": "customer_id 99003 does not exist",
+       "record_id": "59003"
+      }
+     ],
+     "failing_count": 3
+    }
+   ],
+   "checks_run": 16,
+   "checks_failed": 16,
+   "checks_errored": 0
+  },
+  "needsExplanation": true,
+  "sentSamples": {
+   "CUST_EMAIL_DUPLICATE": [
+    "t******.n*********@example.com"
+   ],
+   "CUST_EMAIL_FORMAT": [
+    "1441",
+    "1964"
+   ],
+   "CUST_EMAIL_MISSING": [
+    "1052",
+    "1816",
+    "1850"
+   ],
+   "CUST_KYC_STATUS": [
+    "1266",
+    "1391"
+   ],
+   "FEED_FRESHNESS": [
+    "card_settlements"
+   ],
+   "LEDGER_ARITHMETIC": [
+    "5****@2026-10-20"
+   ],
+   "LEDGER_TXN_RECON": [
+    "5****@2026-10-28"
+   ],
+   "TXN_AMOUNT_RANGE": [
+    "9008569",
+    "9008570",
+    "9008571"
+   ],
+   "TXN_DUPLICATE_REF": [
+    "CPS20261031000138",
+    "CPS20261102000019",
+    "CPS20261103000180",
+    "CPS20261112000177"
+   ],
+   "TXN_FUTURE_DATE": [
+    "9008572",
+    "9008573"
+   ],
+   "TXN_ORPHAN_WALLET": [
+    "9008574",
+    "9008575"
+   ],
+   "TXN_VOLUME_DROP": [
+    "2026-11-15"
+   ],
+   "TXN_WITHDRAWAL_FEE": [
+    "9008576",
+    "9008577",
+    "9008578"
+   ],
+   "WALLET_CURRENCY": [
+    "51406"
+   ],
+   "WALLET_NEGATIVE_BALANCE": [
+    "51923",
+    "52492"
+   ],
+   "WALLET_ORPHAN": [
+    "59001",
+    "59002",
+    "59003"
+   ]
+  }
+ },
+ "claudeResponse": {
+  "model": "claude-opus-5-5",
+  "id": "msg_011Ch6dEj5Cz1F6TgHUFhiRF",
+  "type": "message",
+  "role": "assistant",
+  "content": [
+   {
+    "type": "thinking",
+    "thinking": "",
+    "signature": "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"
+   },
+   {
+    "type": "text",
+    "text": "{\"summary\":\"Most urgent: four payment-switch references were posted twice, and the ledger breaks (closing balance off by 12.50 on one day; ledger credits 100.00 above transactions on another), negative balances and orphan wallets and transactions all put the books and regulatory reporting at risk. Next, the withdrawal fee engine ignores the minimum, the cap and rounding rules, and a batch of invalid transactions (zero, negative and over-limit amounts, future dates, unknown wallets) got past ingestion validation. The card_settlements feed is 26 h past its SLA and yesterday's volume fell to 90 against an average of 293, so a partial or failed load should be ruled out. Customer data issues (KYC vocabulary, currency code, emails) need mapping and validation fixes.\",\"incidents\":[{\"rule_code\":\"TXN_DUPLICATE_REF\",\"likely_cause\":\"A retried or replayed payment-switch posting. Each duplicate (9008565-9008568) is a recent txn_id reusing a reference first posted days earlier, which points to a message re-delivery or a reprocessed switch file with no idempotency check on external_ref. Comparing the load batch or job run ids of the second copies would confirm it.\",\"business_impact\":\"Customers may have been credited or debited twice, which misstates balances, overstates volumes and revenue, and can let money leave the platform.\",\"suggested_fix\":\"Confirm against the switch settlement report, reverse the second posting of each pair through proper adjustments, and notify affected customers. Then add a unique constraint or idempotency check on external_ref in the posting path.\",\"assessed_severity\":\"critical\",\"confidence\":\"high\",\"evidence_ids\":[\"CPS20261031000138\",\"CPS20261102000019\",\"CPS20261103000180\",\"CPS20261112000177\",\"9004238\",\"9008568\",\"9004692\",\"9008565\",\"9005162\",\"9008566\",\"9007789\",\"9008567\"],\"related_rules\":[\"WALLET_NEGATIVE_BALANCE\"]},{\"rule_code\":\"LEDGER_ARITHMETIC\",\"likely_cause\":\"The closing balance is 12.50 higher than opening plus credits minus debits. This suggests a manual or out-of-band adjustment written straight to closing_balance without being booked as a credit, or a ledger job that recomputed the closing balance from a different source. The adjustment and audit logs for that wallet and date would confirm it.\",\"business_impact\":\"The ledger no longer balances, so financial statements, the trust-account reconciliation and the next day's opening balance are wrong for this wallet.\",\"suggested_fix\":\"Trace the 12.50 difference and book it as an explicit credit, or correct the closing balance and roll the change forward to later days. Then enforce the arithmetic with a table constraint or a check inside the ledger build job.\",\"assessed_severity\":\"critical\",\"confidence\":\"medium\",\"evidence_ids\":[\"5****@2026-10-20\"],\"related_rules\":[\"LEDGER_TXN_RECON\"]},{\"rule_code\":\"LEDGER_TXN_RECON\",\"likely_cause\":\"Ledger credits exceed completed transactions by exactly 100.00. That round figure points to a manual credit adjustment entered in the ledger without a matching transaction, or a 100.00 transaction that was later reversed or failed while the ledger was not rebuilt. The transaction status history and the ledger adjustment log for that wallet and day would confirm which.\",\"business_impact\":\"The customer's ledger balance may include 100.00 that has no supporting transaction, so finance reconciliation and regulatory balance reporting are misstated.\",\"suggested_fix\":\"Investigate the 100.00 difference, then either create the missing transaction record or correct the ledger and roll the balances forward. Rebuild ledger totals from transactions after any status change, and record manual adjustments as transactions.\",\"assessed_severity\":\"critical\",\"confidence\":\"medium\",\"evidence_ids\":[\"5****@2026-10-28\"],\"related_rules\":[\"LEDGER_ARITHMETIC\"]},{\"rule_code\":\"WALLET_NEGATIVE_BALANCE\",\"likely_cause\":\"Debits were posted without a sufficient-funds check, either through a race between concurrent debits or through a posting path that bypasses the balance check (for example duplicate postings or back-office adjustments). The transaction history of both wallets would show which postings pushed them below zero.\",\"business_impact\":\"Money has left wallets that had no funds, creating a loss exposure of at least 355.20 and breaching the no-overdraft product rule.\",\"suggested_fix\":\"Review the transaction history of both wallets, reverse any erroneous or duplicate debits, or raise a recovery case. Enforce the balance check atomically, with row locking or a CHECK balance >= 0 constraint, on every debit path.\",\"assessed_severity\":\"critical\",\"confidence\":\"medium\",\"evidence_ids\":[\"51923\",\"52492\"],\"related_rules\":[\"TXN_DUPLICATE_REF\"]},{\"rule_code\":\"WALLET_ORPHAN\",\"likely_cause\":\"The wallets reference customer_ids 99001-99003, a sequential block in an unusual range. This looks like test or placeholder data loaded into production, or wallets loaded before (or without) their customer records. Checking the load source and creation timestamps would confirm it.\",\"business_impact\":\"These wallets cannot be tied to a KYC'd customer, so they cannot be reconciled or reported to the regulator and could hold unaccounted funds.\",\"suggested_fix\":\"Find where wallets 59001-59003 came from. Remove them if they are test data, or load the missing customers if they are real. Add a foreign key from wallets.customer_id to customers.customer_id.\",\"assessed_severity\":\"critical\",\"confidence\":\"medium\",\"evidence_ids\":[\"59001\",\"59002\",\"59003\"],\"related_rules\":[\"TXN_ORPHAN_WALLET\"]},{\"rule_code\":\"TXN_ORPHAN_WALLET\",\"likely_cause\":\"The transactions reference wallet_ids 99901 and 99902, which do not exist and fall in an unusual range. This suggests test data or a mis-mapped wallet id from a source feed, loaded without referential checks. Their consecutive txn_ids alongside other invalid records point to a single bad batch.\",\"business_impact\":\"Money movements cannot be attributed to any wallet or customer, which breaks reconciliation and AML or regulatory reporting.\",\"suggested_fix\":\"Trace transactions 9008574-9008575 to their source. Delete them if they are test data, or remap them to the correct wallets. Add a foreign key to wallets and reject unknown wallets at ingestion.\",\"assessed_severity\":\"critical\",\"confidence\":\"medium\",\"evidence_ids\":[\"9008574\",\"9008575\"],\"related_rules\":[\"WALLET_ORPHAN\",\"TXN_AMOUNT_RANGE\",\"TXN_FUTURE_DATE\"]},{\"rule_code\":\"TXN_WITHDRAWAL_FEE\",\"likely_cause\":\"The fee calculation applies a flat 1.5% without the 0.25 minimum or the 15.00 cap, and it truncates rather than rounds: 33.33 x 1.5% = 0.49995 was charged as 0.49 instead of 0.50. The fee engine has not implemented FSD-2026-031 BR-03 correctly.\",\"business_impact\":\"Customers are overcharged on large withdrawals (30.00 instead of 15.00) and undercharged on small ones, which creates revenue errors, customer complaints and possible consumer-protection issues.\",\"suggested_fix\":\"Fix the fee function to apply the minimum, the cap and half-up rounding to the cent. Identify all affected withdrawals, refund overcharges, and add unit tests that cover the boundary cases.\",\"assessed_severity\":\"high\",\"confidence\":\"high\",\"evidence_ids\":[\"9008576\",\"9008577\",\"9008578\"],\"related_rules\":[]},{\"rule_code\":\"TXN_AMOUNT_RANGE\",\"likely_cause\":\"Ingestion has no amount validation, so deposits of 0.00, -25.00 (possibly a reversal posted as a deposit) and 15,000.00 (above the per-transaction limit) were accepted. Their consecutive txn_ids suggest a single bad batch or test load.\",\"business_impact\":\"Invalid deposits distort balances and the ledger. The over-limit deposit may also breach transaction limits and AML controls.\",\"suggested_fix\":\"Confirm each transaction with the source. Void the zero-amount deposit, record the negative one as a proper reversal, and check the 15,000.00 deposit for limit and AML handling. Add CHECK constraints and API validation for 0 < amount <= 10,000.\",\"assessed_severity\":\"high\",\"confidence\":\"medium\",\"evidence_ids\":[\"9008569\",\"9008570\",\"9008571\"],\"related_rules\":[\"TXN_FUTURE_DATE\",\"TXN_ORPHAN_WALLET\"]},{\"rule_code\":\"TXN_FUTURE_DATE\",\"likely_cause\":\"These timestamps are about 2 or more days ahead of the latest complete day (2026-11-15), so this is more than a CAT (UTC+2) versus UTC offset. The most likely causes are a wrong source clock or date field, or test records. Checking the source system clock and the raw payload would confirm which.\",\"business_impact\":\"Future-dated transactions land in the wrong ledger day and the wrong reports, and can distort limits and reconciliation.\",\"suggested_fix\":\"Correct the created_at values from the source records or remove them if they are test data. Reject timestamps beyond a small tolerance at ingestion and require explicit time zones.\",\"assessed_severity\":\"high\",\"confidence\":\"low\",\"evidence_ids\":[\"9008572\",\"9008573\"],\"related_rules\":[\"TXN_AMOUNT_RANGE\",\"TXN_ORPHAN_WALLET\"]},{\"rule_code\":\"FEED_FRESHNESS\",\"likely_cause\":\"The card processor's card_settlements feed last loaded 50 h ago against a 24 h SLA, which points to a failed or stalled load job or a file not delivered by the processor. The scheduler logs and the processor's delivery folder would show which.\",\"business_impact\":\"Card settlements are missing, so card transactions and balances are incomplete and settlement reconciliation is delayed.\",\"suggested_fix\":\"Check the job logs and the source delivery, rerun the missing loads, and backfill. Add alerting on job failure and missing files well before the SLA expires.\",\"assessed_severity\":\"high\",\"confidence\":\"medium\",\"evidence_ids\":[\"card_settlements\"],\"related_rules\":[\"TXN_VOLUME_DROP\"]},{\"rule_code\":\"TXN_VOLUME_DROP\",\"likely_cause\":\"There were only 90 transactions on 2026-11-15 against a 293 average, which most likely means a partial or failed load for that day rather than a real drop in activity. It may be connected to the late card feed, but whether card data feeds wallet.transactions is unknown. Comparing source-system counts for that day would confirm it.\",\"business_impact\":\"Daily reporting, the ledger and reconciliation for 2026-11-15 are likely incomplete.\",\"suggested_fix\":\"Compare counts with the payment switch and other sources for 2026-11-15 and reload the missing data. Add load-completeness checks against source control totals.\",\"assessed_severity\":\"high\",\"confidence\":\"low\",\"evidence_ids\":[\"2026-11-15\"],\"related_rules\":[\"FEED_FRESHNESS\"]},{\"rule_code\":\"CUST_KYC_STATUS\",\"likely_cause\":\"The value 'approved' is most likely the KYC provider's own vocabulary passed through without being mapped to 'verified'. The mapping layer or the input validation is missing. Checking the provider payloads for these customers would confirm it.\",\"business_impact\":\"These customers may get the wrong transaction limits and are misclassified in compliance reporting.\",\"suggested_fix\":\"Have Compliance confirm that 'approved' means 'verified', then update the records. Add the mapping in the KYC integration and a CHECK constraint on kyc_status.\",\"assessed_severity\":\"high\",\"confidence\":\"medium\",\"evidence_ids\":[\"1266\",\"1391\"],\"related_rules\":[]},{\"rule_code\":\"WALLET_CURRENCY\",\"likely_cause\":\"The currency was stored as the display symbol 'US$' instead of the ISO code 'USD'. This points to free-text entry or an unmapped source value, with no validation.\",\"business_impact\":\"The wallet may be left out of currency-based reporting, conversion and limits.\",\"suggested_fix\":\"Update wallet 51406 to 'USD'. Add a CHECK constraint or a reference table of ISO currency codes and map source values at ingestion.\",\"assessed_severity\":\"medium\",\"confidence\":\"high\",\"evidence_ids\":[\"51406\"],\"related_rules\":[]},{\"rule_code\":\"CUST_EMAIL_DUPLICATE\",\"likely_cause\":\"The same email was registered for two customers, most likely through duplicate onboarding of the same person or a shared family email, because there is no uniqueness check. Comparing the two customers' identity details would confirm it.\",\"business_impact\":\"Receipts, password resets and security alerts can go to the wrong person, which is a privacy and account-takeover risk.\",\"suggested_fix\":\"Review customers 1854 and 2108, then merge them if they are the same person or obtain a separate email for one. Add a case-insensitive unique index on email and a check at signup.\",\"assessed_severity\":\"high\",\"confidence\":\"medium\",\"evidence_ids\":[\"t******.n*********@example.com\",\"1854\",\"2108\"],\"related_rules\":[]},{\"rule_code\":\"CUST_EMAIL_FORMAT\",\"likely_cause\":\"The capture form or API does not validate email format: one address has no TLD and another uses ' at ' instead of '@'.\",\"business_impact\":\"Messages to these customers bounce, so they miss receipts and security alerts.\",\"suggested_fix\":\"Contact the customers to correct their emails. Add format validation, plus ideally a verification email, at capture.\",\"assessed_severity\":\"medium\",\"confidence\":\"high\",\"evidence_ids\":[\"1441\",\"1964\"],\"related_rules\":[\"CUST_EMAIL_MISSING\"]},{\"rule_code\":\"CUST_EMAIL_MISSING\",\"likely_cause\":\"Email is not required at onboarding, and blank values are stored inconsistently as NULL, empty string or spaces. This suggests different capture channels with no trimming or required-field validation.\",\"business_impact\":\"These customers cannot receive receipts, password resets or security alerts.\",\"suggested_fix\":\"Collect emails from the affected customers. Make email mandatory with trimming and validation on all channels, and standardise blank values to NULL.\",\"assessed_severity\":\"medium\",\"confidence\":\"medium\",\"evidence_ids\":[\"1052\",\"1816\",\"1850\"],\"related_rules\":[\"CUST_EMAIL_FORMAT\"]}]}"
+   }
+  ],
+  "container": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "stop_details": null,
+  "usage": {
+   "input_tokens": 7699,
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "cache_creation": {
+    "ephemeral_5m_input_tokens": 0,
+    "ephemeral_1h_input_tokens": 0
+   },
+   "output_tokens": 5971,
+   "output_tokens_details": {
+    "thinking_tokens": 1016
+   },
+   "service_tier": "standard",
+   "inference_geo": "global",
+   "speed": "standard"
+  },
+  "diagnostics": null
+ }
+}

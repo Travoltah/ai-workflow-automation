@@ -1,0 +1,317 @@
+{
+  "generated_at": "2026-11-16T12:47:00+00:00",
+  "seed": 31,
+  "clean": false,
+  "counts": {
+    "customers": 1500,
+    "wallets": 1803,
+    "transactions": 8578,
+    "ledger_rows": 6727
+  },
+  "defects": [
+    {
+      "rule_code": "CUST_EMAIL_MISSING",
+      "expected_record_ids": [
+        "1052",
+        "1816",
+        "1850"
+      ],
+      "defect": "3 customers saved without an email (NULL, empty, spaces)",
+      "cause_keywords": [
+        "optional",
+        "required",
+        "mandatory",
+        "validation",
+        "not captured",
+        "onboarding",
+        "sign-up",
+        "registration",
+        "import"
+      ]
+    },
+    {
+      "rule_code": "CUST_EMAIL_FORMAT",
+      "expected_record_ids": [
+        "1441",
+        "1964"
+      ],
+      "defect": "2 emails with no top-level domain / no @",
+      "cause_keywords": [
+        "validation",
+        "format",
+        "typo",
+        "regex",
+        "free-text",
+        "free text",
+        "domain",
+        "manual"
+      ]
+    },
+    {
+      "rule_code": "CUST_EMAIL_DUPLICATE",
+      "expected_record_ids": [
+        "tinashe.nyathi2108@example.com"
+      ],
+      "defect": "a second customer saved with the same email in a different case",
+      "cause_keywords": [
+        "duplicate",
+        "unique",
+        "shared",
+        "same email",
+        "re-regist",
+        "merge",
+        "case"
+      ]
+    },
+    {
+      "rule_code": "CUST_KYC_STATUS",
+      "expected_record_ids": [
+        "1266",
+        "1391"
+      ],
+      "defect": "2 customers with KYC status 'approved' (not an allowed value)",
+      "cause_keywords": [
+        "mapping",
+        "enum",
+        "allowed",
+        "source system",
+        "provider",
+        "code",
+        "translat",
+        "lookup",
+        "vendor"
+      ]
+    },
+    {
+      "rule_code": "WALLET_ORPHAN",
+      "expected_record_ids": [
+        "59001",
+        "59002",
+        "59003"
+      ],
+      "defect": "3 wallets whose customer_id doesn't exist",
+      "cause_keywords": [
+        "deleted",
+        "referential",
+        "foreign key",
+        "load order",
+        "migration",
+        "orphan",
+        "not yet loaded",
+        "sequence",
+        "missing customer"
+      ]
+    },
+    {
+      "rule_code": "WALLET_NEGATIVE_BALANCE",
+      "expected_record_ids": [
+        "51923",
+        "52492"
+      ],
+      "defect": "2 wallets with a negative balance",
+      "cause_keywords": [
+        "overdraft",
+        "race",
+        "concurrent",
+        "double",
+        "reversal",
+        "fee",
+        "insufficient",
+        "balance check",
+        "duplicate"
+      ]
+    },
+    {
+      "rule_code": "WALLET_CURRENCY",
+      "expected_record_ids": [
+        "51406"
+      ],
+      "defect": "1 wallet with currency 'US$' instead of the ISO code USD",
+      "cause_keywords": [
+        "iso",
+        "code",
+        "mapping",
+        "free-text",
+        "free text",
+        "symbol",
+        "standard",
+        "manual"
+      ]
+    },
+    {
+      "rule_code": "TXN_DUPLICATE_REF",
+      "expected_record_ids": [
+        "CPS20261031000138",
+        "CPS20261102000019",
+        "CPS20261103000180",
+        "CPS20261112000177"
+      ],
+      "defect": "4 deposits posted twice with the same switch reference",
+      "cause_keywords": [
+        "duplicate",
+        "retry",
+        "replay",
+        "twice",
+        "double",
+        "idempoten",
+        "resubmit",
+        "re-sent",
+        "resent"
+      ]
+    },
+    {
+      "rule_code": "TXN_AMOUNT_RANGE",
+      "expected_record_ids": [
+        "9008569",
+        "9008570",
+        "9008571"
+      ],
+      "defect": "deposits of 0.00, -25.00 and 15,000.00",
+      "cause_keywords": [
+        "validation",
+        "limit",
+        "zero",
+        "negative",
+        "reversal",
+        "refund",
+        "sign",
+        "decimal",
+        "cents",
+        "unit"
+      ]
+    },
+    {
+      "rule_code": "TXN_FUTURE_DATE",
+      "expected_record_ids": [
+        "9008572",
+        "9008573"
+      ],
+      "defect": "2 deposits dated two days in the future",
+      "cause_keywords": [
+        "time zone",
+        "timezone",
+        "clock",
+        "utc",
+        "offset",
+        "timestamp",
+        "date format",
+        "server time"
+      ]
+    },
+    {
+      "rule_code": "TXN_ORPHAN_WALLET",
+      "expected_record_ids": [
+        "9008574",
+        "9008575"
+      ],
+      "defect": "2 transactions on wallet ids that don't exist",
+      "cause_keywords": [
+        "load order",
+        "referential",
+        "foreign key",
+        "deleted",
+        "migration",
+        "not yet loaded",
+        "test",
+        "missing wallet",
+        "sequence"
+      ]
+    },
+    {
+      "rule_code": "TXN_WITHDRAWAL_FEE",
+      "expected_record_ids": [
+        "9008576",
+        "9008577",
+        "9008578"
+      ],
+      "defect": "fees without the 0.25 minimum, without the 15.00 maximum, and truncated instead of rounded",
+      "cause_keywords": [
+        "minimum",
+        "maximum",
+        "cap",
+        "floor",
+        "ceiling",
+        "round",
+        "truncat",
+        "min",
+        "max"
+      ]
+    },
+    {
+      "rule_code": "FEED_FRESHNESS",
+      "expected_record_ids": [
+        "card_settlements"
+      ],
+      "defect": "the card settlement feed last loaded 50 hours ago (SLA 24 h)",
+      "cause_keywords": [
+        "job",
+        "pipeline",
+        "fail",
+        "delay",
+        "stale",
+        "schedul",
+        "outage",
+        "late",
+        "credential",
+        "stopped"
+      ]
+    },
+    {
+      "rule_code": "TXN_VOLUME_DROP",
+      "expected_record_ids": [
+        "2026-11-15"
+      ],
+      "defect": "the latest day has 30% of the usual transaction volume",
+      "cause_keywords": [
+        "outage",
+        "incomplete",
+        "partial",
+        "load",
+        "pipeline",
+        "feed",
+        "missing",
+        "downtime",
+        "cut-off",
+        "cutoff"
+      ]
+    },
+    {
+      "rule_code": "LEDGER_ARITHMETIC",
+      "expected_record_ids": [
+        "52146@2026-10-20"
+      ],
+      "defect": "one ledger row's closing balance is 12.50 too high",
+      "cause_keywords": [
+        "manual",
+        "adjustment",
+        "rounding",
+        "calculation",
+        "posting",
+        "override",
+        "sync",
+        "overwrit",
+        "edit"
+      ]
+    },
+    {
+      "rule_code": "LEDGER_TXN_RECON",
+      "expected_record_ids": [
+        "52479@2026-10-28"
+      ],
+      "defect": "one ledger row has a 100.00 credit with no matching transaction",
+      "cause_keywords": [
+        "missing",
+        "reversal",
+        "late",
+        "cut-off",
+        "cutoff",
+        "adjustment",
+        "manual",
+        "duplicate",
+        "timing",
+        "posted",
+        "unrecorded"
+      ]
+    }
+  ]
+}

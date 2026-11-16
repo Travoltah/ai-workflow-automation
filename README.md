@@ -11,6 +11,7 @@ Each project is a complete, runnable build: importable workflows, sample data, s
 | 01 | [RAG FAQ Chatbot](projects/01-rag-faq-chatbot/) | Customer-support bot that answers only from FAQ documents, cites sources, refuses to guess, and logs knowledge gaps | n8n · Claude · Qdrant · OpenAI embeddings · Postgres |
 | 02 | [Jira Test-Case Generator](projects/02-jira-test-case-generator/) | Turns Jira user stories into traceable manual test cases (boundary, negative, security), checks coverage, posts them back to Jira, and asks for clarification instead of guessing | n8n · Claude (structured outputs) · Jira Cloud · Postgres |
 | 03 | [Requirements to Test Script](projects/03-requirements-to-test-script/) | Turns an FSD or Change Request (Word/PDF) and wireframes into Jira user stories with acceptance criteria, linked QA tickets, and a bank-style Excel test script, without recreating existing stories | n8n · Claude (structured outputs) · Jira Cloud REST · Python (python-docx, openpyxl) |
+| 04 | [AI Data Quality Monitor](projects/04-data-quality-monitor/) | Runs SQL data quality rules on a mobile money database, opens and resolves incidents, and has Claude explain each new failure (cause, impact, fix), checked by code before it reaches Jira. Evaluated against 16 planted defects | n8n · Claude (structured outputs) · PostgreSQL · Jira Cloud REST |
 
 *More projects are added here as they're built.*
 
